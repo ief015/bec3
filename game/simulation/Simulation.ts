@@ -72,7 +72,7 @@ export default class Simulation {
     body1.vx = 0.4662036850 * scale;
     body1.vy = 0.4323657300 * scale;
     body1.radius = 0.1 * scale;
-    body1.mass = scale**3;
+    body1.mass = scale ** 3;
     body1.strokeColor = this.randomColor();
 
     body2.x = x;
@@ -80,7 +80,7 @@ export default class Simulation {
     body2.vx = -0.93240737 * scale;
     body2.vy = -0.86473146 * scale;
     body2.radius = 0.1 * scale;
-    body2.mass = scale**3;
+    body2.mass = scale ** 3;
     body2.strokeColor = this.randomColor();
 
     body3.x = -0.97000436 * scale + x;
@@ -88,7 +88,7 @@ export default class Simulation {
     body3.vx = 0.4662036850 * scale;
     body3.vy = 0.4323657300 * scale;
     body3.radius = 0.1 * scale;
-    body3.mass = scale**3;
+    body3.mass = scale ** 3;
     body3.strokeColor = this.randomColor();
 
     this.bodies.push(body1, body2, body3);
