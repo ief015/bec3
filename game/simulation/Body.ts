@@ -8,7 +8,7 @@ export default class Body {
   public ly: number = 0;
   public vx: number = 0;
   public vy: number = 0;
-  public diameter: number = 1;
+  public radius: number = 1;
   public mass: number = 1;
   public strokeColor: string = 'white';
 
@@ -24,7 +24,7 @@ export default class Body {
 
   public draw(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
-    ctx.lineWidth = this.diameter;
+    ctx.lineWidth = this.radius * 2;
     ctx.lineCap = 'round';
     ctx.strokeStyle = this.strokeColor;
     ctx.moveTo(this.lx, this.ly);

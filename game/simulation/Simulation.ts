@@ -9,7 +9,7 @@ export default class Simulation {
 
   constructor(game: GameMain) {
     this.game = game;
-    this.generateBodies(100);
+    this.generateBodies(50);
   }
 
   public getBodies(): Body[] {
@@ -21,7 +21,7 @@ export default class Simulation {
       const a = this.bodies[i];
       for (let j = i + 1; j < this.bodies.length; j++) {
         const b = this.bodies[j];
-        this.applyForces(dt, a, b);
+        this.applyNBody(dt, a, b);
       }
     }
     this.bodies.forEach(p => p.step(dt));
@@ -31,19 +31,19 @@ export default class Simulation {
     this.drawBodies(ctx);
   }
 
-  private applyForces(dt: number, a: Body, b: Body): void {
+  private applyNBody(dt: number, a: Body, b: Body): void {
     const dx = b.x - a.x;
     const dy = b.y - a.y;
-    const minDist = a.diameter + b.diameter;
-    const distSqr = Math.max(minDist, dx * dx + dy * dy)
+    const minDist = a.radius + b.radius;
+    const distSqr = Math.max(minDist * minDist, dx * dx + dy * dy)
     const dist = Math.sqrt(distSqr);
-    const force = (a.mass * b.mass) / distSqr;
-    const ax = this.gravity * force * dx / dist;
-    const ay = this.gravity * force * dy / dist;
-    a.vx += ax / a.mass * dt;
-    a.vy += ay / a.mass * dt;
-    b.vx -= ax / b.mass * dt;
-    b.vy -= ay / b.mass * dt;
+    const dirx = dx / dist;
+    const diry = dy / dist;
+    const force = (this.gravity * a.mass * b.mass) / distSqr;
+    a.vx += (force / a.mass) * dirx * dt;
+    a.vy += (force / a.mass) * diry * dt;
+    b.vx -= (force / b.mass) * dirx * dt;
+    b.vy -= (force / b.mass) * diry * dt;
   }
 
   // whack ass shit below
@@ -61,10 +61,10 @@ export default class Simulation {
       const y = window.innerHeight * Math.random();
       const part = new Body(x, y);
       part.strokeColor = this.randomColor();
-      part.vx = (Math.random() * 2 - 1) * 100;
-      part.vy = (Math.random() * 2 - 1) * 100;
-      part.diameter = Math.random() * 5 + 2;
-      part.mass = part.diameter * 10000;
+      part.vx = (Math.random() * 2 - 1) * 10;
+      part.vy = (Math.random() * 2 - 1) * 10;
+      part.radius = Math.random() * 4 + 1;
+      part.mass = part.radius * 1000;
       this.bodies.push(part);
     }
   }
