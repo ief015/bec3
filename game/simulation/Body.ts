@@ -1,5 +1,3 @@
-import Point from "~/game/Point";
-
 export default class Body {
 
   public x: number = 0;

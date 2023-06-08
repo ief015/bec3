@@ -3,5 +3,4 @@ export default interface GameStats {
   updateTimeMs: number;
   renderTimeMs: number;
   fps: number;
-  ups: number;
 }

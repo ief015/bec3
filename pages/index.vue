@@ -1,18 +1,20 @@
 <template>
   <div>
-    <GameMain ref="game" class="fixed w-screen h-screen -z-10" />
-    <div v-if="game" class="absolute inset-0 cursor-default">
-      <HudToolbar
-        class="absolute left-2 right-2 top-2"
-        v-model:selection="tool"
-      />
+    <GameMain ref="game" class="fixed w-screen h-screen z-0" />
+    <div v-if="game" class="absolute inset-0 z-10 cursor-default pointer-events-none">
+      <div class="relative top-2 flex justify-center">
+        <HudToolbar
+          class="pointer-events-auto"
+          v-model:selection="tool"
+        />
+      </div>
       <HudCounter
-        class="absolute bottom-2 left-2 right-2"
+        class="absolute bottom-2 left-2 right-2 select-none"
         :count="game.bodyCount"
         label="bodies"
       />
       <HudStats
-        class="absolute left-2 bottom-2"
+        class="absolute bottom-2 left-2 select-none"
         :stats="game.gameStats"
       />
     </div>

@@ -8,10 +8,7 @@ export type OnFrameCallback = () => void;
 export default class GameMain {
 
   private canvas: HTMLCanvasElement|null = null;
-  private lastFrameTimestamp: number = -Infinity;
-  private nextUpdateTimestamp: number = -Infinity;
-  private updateRateUser: number = 60;
-  private updateRateMs: number = 1000 / this.updateRateUser;
+  private lastFrameTimestamp: number = performance.now();
   private paused: boolean = false;
   private shutdown: boolean = false;
   private cursor: Point = { x: 0, y: 0 };
@@ -25,7 +22,6 @@ export default class GameMain {
     updateTimeMs: 0,
     renderTimeMs: 0,
     fps: 0,
-    ups: 0,
   }
 
   private onFrameCb?: OnFrameCallback;
@@ -38,21 +34,12 @@ export default class GameMain {
     return this.cursor;
   }
 
-  public getUpdateRate(): number {
-    return this.updateRateUser;
-  }
-
-  public setUpdateRate(rate: number): void {
-    this.updateRateUser = Math.max(0, rate);
-    this.updateRateMs = 1000 / this.updateRateUser;
-  }
-
   public getStats(): GameStats {
     return { ...this.stats };
   }
 
-  public getBodies(): Body[] {
-    return this.sim.getBodies();
+  public getSimulation(): Simulation {
+    return this.sim;
   }
 
   public pause(): void {
@@ -119,15 +106,19 @@ export default class GameMain {
     ctx.restore();
   }
 
-  public handleMouseMove(e: MouseEvent) {
+  private handleMouseMove(e: MouseEvent) {
     this.cursor.x = e.x;
     this.cursor.y = e.y;
   }
 
-  public handleTouchMove(e: TouchEvent) {
+  private handleTouchMove(e: TouchEvent) {
     e.preventDefault();
     this.cursor.x = e.touches[0].clientX;
     this.cursor.y = e.touches[0].clientY;
+  }
+
+  public handleClick(e: MouseEvent) {
+    console.log(e);
   }
 
   private handleResize() {
@@ -137,26 +128,22 @@ export default class GameMain {
     }
   }
 
-  private handleFrame(time: number) {
-    if (time >= this.nextUpdateTimestamp) {
-      this.stats.updateTimeMs = this.update(this.updateRateMs/1000);
-      this.nextUpdateTimestamp = time + this.updateRateMs;
-      if (this.canvas) {
-        const ctx = this.canvas.getContext('2d');
-        if (ctx) {
-          const dt = time - this.lastFrameTimestamp;
-          this.stats.renderTimeMs = this.draw(this.canvas, ctx, dt/1000);
-        }
+  private handleFrame(startTime: number) {
+    const dt = startTime - this.lastFrameTimestamp;
+    this.stats.updateTimeMs = this.update(dt / 1000);
+    if (this.canvas) {
+      const ctx = this.canvas.getContext('2d');
+      if (ctx) {
+        this.stats.renderTimeMs = this.draw(this.canvas, ctx, dt / 1000);
       }
-      this.lastFrameTimestamp = time;
-      this.stats.frameTimeMs = performance.now() - time;
-      this.stats.fps = 1000 / this.stats.frameTimeMs;
-      this.stats.ups = 1000 / Math.max(this.updateRateMs, this.stats.updateTimeMs);
     }
+    this.stats.frameTimeMs = performance.now() - startTime;
+    this.stats.fps = 1000 / (startTime - this.lastFrameTimestamp);
+    this.lastFrameTimestamp = startTime;
     if (this.paused || this.shutdown)
       return;
-    this.onFrameCb?.();
     requestAnimationFrame(this.handleFrame.bind(this));
+    this.onFrameCb?.();
   }
 
 }

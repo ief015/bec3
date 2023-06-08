@@ -1,5 +1,5 @@
 <template>
-  <canvas ref="canvas">
+  <canvas ref="canvas" @click="onClick">
     Your browser does not support the HTML5 canvas tag.
   </canvas>
 </template>
@@ -7,12 +7,12 @@
 <script setup lang="ts">
 import GameMain from '~/game/GameMain';
 import GameStats from '~/game/simulation/GameStats';
+import generateFigure8 from '~/game/simulation/util/generateFigure8';
 
 const canvas = ref<HTMLCanvasElement>();
 const game = ref<GameMain>();
 const gameStats = ref<GameStats>({
   fps: 0,
-  ups: 0,
   frameTimeMs: 0,
   updateTimeMs: 0,
   renderTimeMs: 0,
@@ -22,14 +22,25 @@ const bodyCount = ref<number>(0);
 const onFrame = () => {
   if (!game.value)
     return;
+  const sim = game.value.getSimulation();
   gameStats.value = game.value.getStats();
-  bodyCount.value = game.value.getBodies().length;
+  bodyCount.value = sim.getBodies().length;
+}
+
+const onClick = (e: MouseEvent) => {
+  if (game.value) {
+    game.value.handleClick(e);
+  }
 }
 
 watch(canvas, () => {
   if (canvas.value) {
     game.value?.destroy();
     game.value = new GameMain(canvas.value);
+    const sim = game.value.getSimulation();
+    sim.getBodies().push(
+      ...generateFigure8(window.innerWidth / 2, window.innerHeight / 2, 100),
+    );
     game.value.start(onFrame);
   }
 }, { immediate: true });
