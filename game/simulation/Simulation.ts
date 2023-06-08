@@ -16,24 +16,17 @@ export default class Simulation {
     return this.bodies;
   }
 
-  public step(dt: number): void {
-    const dtScaled = dt * this.timeScale;
-    for (let i = 0; i < this.bodies.length; i++) {
-      const a = this.bodies[i];
-      for (let j = i + 1; j < this.bodies.length; j++) {
-        const b = this.bodies[j];
-        this.applyNBody(dtScaled, a, b);
-      }
-    }
-    for (const b of this.bodies) {
-      b.step(dtScaled);
-    }
+  public clearBodies(): void {
+    this.bodies.splice(0, this.bodies.length);
   }
 
-  public render(ctx: CanvasRenderingContext2D, dt: number): void {
-    ctx.save();
-    this.drawBodies(ctx);
-    ctx.restore();
+  public clearBodiesOutsideRect(top: number, left: number, bottom: number, right: number): void {
+    for (let i = this.bodies.length - 1; i >= 0; i--) {
+      const b = this.bodies[i];
+      if (b.x < left || b.x > right || b.y < top || b.y > bottom) {
+        this.bodies.splice(i, 1);
+      }
+    }
   }
 
   private applyNBody(dt: number, a: Body, b: Body): void {
@@ -51,11 +44,30 @@ export default class Simulation {
     b.vy -= force / b.mass * diry * dt;
   }
 
+  public step(dt: number): void {
+    const dtScaled = dt * this.timeScale;
+    for (let i = 0; i < this.bodies.length; i++) {
+      const a = this.bodies[i];
+      for (let j = i + 1; j < this.bodies.length; j++) {
+        const b = this.bodies[j];
+        this.applyNBody(dtScaled, a, b);
+      }
+    }
+    for (const b of this.bodies) {
+      b.step(dtScaled);
+    }
+  }
 
   private drawBodies(ctx: CanvasRenderingContext2D) {
     for (const b of this.bodies) {
       b.draw(ctx);
     }
+  }
+
+  public render(ctx: CanvasRenderingContext2D, dt: number): void {
+    ctx.save();
+    this.drawBodies(ctx);
+    ctx.restore();
   }
 
 }

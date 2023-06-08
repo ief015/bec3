@@ -1,5 +1,5 @@
 import Body from "~/game/simulation/Body";
-import randomColorHex from "~/game/simulation/util/randomColor";
+import randomColorHex from "~/game/simulation/utils/randomColor";
 
 /**
  * Generate a figure-8 solution of three bodies.

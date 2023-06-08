@@ -2,7 +2,7 @@ import Point from "~/game/Point";
 import Body from "~/game/simulation/Body";
 import GameStats from "~/game/simulation/GameStats";
 import Simulation from "~/game/simulation/Simulation";
-import randomColorHex from "~/game/simulation/util/randomColor";
+import randomColorHex from "~/game/simulation/utils/randomColor";
 
 export type OnFrameCallback = (game: GameMain) => void;
 
@@ -10,6 +10,7 @@ export default class GameMain {
 
   private canvas: HTMLCanvasElement|null = null;
   private lastFrameTimestamp: number = performance.now();
+  private pausedTimestamp: number = 0;
   private paused: boolean = false;
   private shutdown: boolean = false;
   private cursor: Point = { x: 0, y: 0 };
@@ -17,6 +18,8 @@ export default class GameMain {
   private handleResizeListener = this.handleResize.bind(this);
   private handleMouseMoveListener = this.handleMouseMove.bind(this);
   private handleTouchMoveListener = this.handleTouchMove.bind(this);
+  private handleBlurListener = this.pause.bind(this);
+  private handleFocusListener = this.resume.bind(this);
 
   private stats: GameStats = {
     frameTimeMs: 0,
@@ -44,11 +47,17 @@ export default class GameMain {
   }
 
   public pause(): void {
+    if (this.paused)
+      return;
     this.paused = true;
+    this.pausedTimestamp = performance.now();
   }
 
   public resume(): void {
+    if (!this.paused)
+      return;
     this.paused = false;
+    this.lastFrameTimestamp += performance.now() - this.pausedTimestamp;
     requestAnimationFrame(this.handleFrame.bind(this));
   }
 
@@ -67,6 +76,8 @@ export default class GameMain {
     addEventListener('resize', this.handleResizeListener);
     addEventListener('mousemove', this.handleMouseMoveListener);
     addEventListener('touchmove', this.handleTouchMoveListener);
+    addEventListener('blur', this.handleBlurListener);
+    addEventListener('focus', this.handleFocusListener);
     requestAnimationFrame(this.handleFrame.bind(this));
     return performance.now() - t;
   }
@@ -76,6 +87,8 @@ export default class GameMain {
     removeEventListener('resize', this.handleResizeListener);
     removeEventListener('mousemove', this.handleMouseMoveListener);
     removeEventListener('touchmove', this.handleTouchMoveListener);
+    removeEventListener('blur', this.handleBlurListener);
+    removeEventListener('focus', this.handleFocusListener);
     this.shutdown = true;
     return performance.now() - t;
   }
@@ -138,6 +151,7 @@ export default class GameMain {
   private handleFrame(startTime: number) {
     const dt = startTime - this.lastFrameTimestamp;
     this.stats.updateTimeMs = this.update(dt / 1000);
+    this.sim.clearBodiesOutsideRect(0, 0, window.innerWidth, window.innerHeight);
     if (this.canvas) {
       const ctx = this.canvas.getContext('2d');
       if (ctx) {

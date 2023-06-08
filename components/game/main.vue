@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import GameMain from '~/game/GameMain';
 import GameStats from '~/game/simulation/GameStats';
-import generateFigure8 from '~/game/simulation/util/generateFigure8';
+import generateFigure8 from '~/game/simulation/utils/generateFigure8';
 
 const canvas = ref<HTMLCanvasElement>();
 const game = ref<GameMain>();
@@ -22,7 +22,7 @@ const bodyCount = ref<number>(0);
 const onPreStart = (game: GameMain) => {
   const sim = game.getSimulation();
   sim.getBodies().push(
-    ...generateFigure8(window.innerWidth / 2, window.innerHeight / 2, 100),
+    ...generateFigure8(window.innerWidth / 2, window.innerHeight / 2, 200),
   );
 }
 
