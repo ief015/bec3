@@ -2,6 +2,7 @@ import Point from "~/game/Point";
 import Body from "~/game/simulation/Body";
 import GameStats from "~/game/simulation/GameStats";
 import Simulation from "~/game/simulation/Simulation";
+import randomColorHex from "~/game/simulation/util/randomColor";
 
 export type OnFrameCallback = (game: GameMain) => void;
 
@@ -118,7 +119,13 @@ export default class GameMain {
   }
 
   public handleClick(e: MouseEvent) {
-    console.log(e);
+    const body = new Body(e.x, e.y);
+    body.radius = 2;
+    body.mass = 1;
+    body.vx = 0;
+    body.vy = 0;
+    body.strokeColor = randomColorHex();
+    this.sim.getBodies().push(body);
   }
 
   private handleResize() {
