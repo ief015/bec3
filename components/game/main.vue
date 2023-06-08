@@ -19,11 +19,16 @@ const gameStats = ref<GameStats>({
 });
 const bodyCount = ref<number>(0);
 
-const onFrame = () => {
-  if (!game.value)
-    return;
-  const sim = game.value.getSimulation();
-  gameStats.value = game.value.getStats();
+const onPreStart = (game: GameMain) => {
+  const sim = game.getSimulation();
+  sim.getBodies().push(
+    ...generateFigure8(window.innerWidth / 2, window.innerHeight / 2, 100),
+  );
+}
+
+const onFrame = (game: GameMain) => {
+  const sim = game.getSimulation();
+  gameStats.value = game.getStats();
   bodyCount.value = sim.getBodies().length;
 }
 
@@ -37,10 +42,7 @@ watch(canvas, () => {
   if (canvas.value) {
     game.value?.destroy();
     game.value = new GameMain(canvas.value);
-    const sim = game.value.getSimulation();
-    sim.getBodies().push(
-      ...generateFigure8(window.innerWidth / 2, window.innerHeight / 2, 100),
-    );
+    onPreStart(game.value);
     game.value.start(onFrame);
   }
 }, { immediate: true });

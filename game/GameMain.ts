@@ -3,7 +3,7 @@ import Body from "~/game/simulation/Body";
 import GameStats from "~/game/simulation/GameStats";
 import Simulation from "~/game/simulation/Simulation";
 
-export type OnFrameCallback = () => void;
+export type OnFrameCallback = (game: GameMain) => void;
 
 export default class GameMain {
 
@@ -143,7 +143,7 @@ export default class GameMain {
     if (this.paused || this.shutdown)
       return;
     requestAnimationFrame(this.handleFrame.bind(this));
-    this.onFrameCb?.();
+    this.onFrameCb?.(this);
   }
 
 }
