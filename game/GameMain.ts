@@ -143,21 +143,21 @@ export default class GameMain {
   }
 
   public handleMouseDown(e: MouseEvent) {
-    this.controller.onPressDown(e.x, e.y);
+    this.controller.onPressDown(e.x, e.y, e.button);
   }
 
   public handleMouseUp(e: MouseEvent) {
-    this.controller.onPressUp(e.x, e.y);
+    this.controller.onPressUp(e.x, e.y, e.button);
   }
 
   public handleTouchDown(e: TouchEvent) {
     const { clientX: x, clientY: y } = e.touches[0];
-    this.controller.onPressDown(x, y);
+    this.controller.onPressDown(x, y, 0);
   }
 
   public handleTouchUp(e: TouchEvent) {
     const { clientX: x, clientY: y } = e.touches[0];
-    this.controller.onPressUp(x, y);
+    this.controller.onPressUp(x, y, 0);
   }
 
   private handleResize() {

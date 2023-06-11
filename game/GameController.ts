@@ -46,23 +46,27 @@ export default class GameController extends GameEventHandler {
 
   }
 
-  public onPressDown(x: number, y: number) {
-    this.pressOrigin = { x, y };
+  public onPressDown(x: number, y: number, button: number) {
+    if (button == 0) {
+      this.pressOrigin = { x, y };
+    }
   };
 
-  public onPressUp(x: number, y: number) {
-    if (this.pressOrigin) {
-      const { x: originX, y: originY } = this.pressOrigin;
-      const sim = this.getSimulation();
-      const body = new Body(originX, originY);
-      body.radius = this.createRadius;
-      body.mass = this.createMass;
-      body.vx = (originX - x) * this.createForce;
-      body.vy = (originY - y) * this.createForce;
-      body.strokeColor = randomColorHex();
-      sim.getBodies().push(body);
+  public onPressUp(x: number, y: number, button: number) {
+    if (button == 0) {
+      if (this.pressOrigin) {
+        const { x: originX, y: originY } = this.pressOrigin;
+        const sim = this.getSimulation();
+        const body = new Body(originX, originY);
+        body.radius = this.createRadius;
+        body.mass = this.createMass;
+        body.vx = (originX - x) * this.createForce;
+        body.vy = (originY - y) * this.createForce;
+        body.strokeColor = randomColorHex();
+        sim.getBodies().push(body);
+      }
+      this.pressOrigin = null;
     }
-    this.pressOrigin = null;
   };
 
 }
