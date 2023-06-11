@@ -1,4 +1,5 @@
 import GameMain from "~/game/GameMain";
+import Point from "~/game/Point";
 import Body from "~/game/simulation/Body";
 
 export default class Simulation {
@@ -35,13 +36,45 @@ export default class Simulation {
     const minDist = a.radius * a.radius + b.radius * b.radius;
     const distSqr = Math.max(minDist, dx * dx + dy * dy)
     const dist = Math.sqrt(distSqr);
-    const dirx = dx / dist;
-    const diry = dy / dist;
     const force = this.gravity * a.mass * b.mass / distSqr;
-    a.vx += force / a.mass * dirx * dt;
-    a.vy += force / a.mass * diry * dt;
-    b.vx -= force / b.mass * dirx * dt;
-    b.vy -= force / b.mass * diry * dt;
+    const forceX = dx / dist * force * dt;
+    const forceY = dy / dist * force * dt;
+    a.vx += forceX / a.mass;
+    a.vy += forceY / a.mass;
+    b.vx -= forceX / b.mass;
+    b.vy -= forceY / b.mass;
+  }
+
+  /**
+   * Trace the path of `traceBody` without applying forces on the simulation. Mutates `traceBody`.
+   * @param traceBody A body to trace. This should be a new Body instance detached from the simulation.
+   * @param iterations Path length in number of iterations. Higher = expensive. Default is `50`.
+   * @param interval Time in seconds between iterations. Longer = inaccuracy. Default is `1/25`.
+   * @returns An array of points representing the path after each iteration.
+   */
+  public tracePath(traceBody: Body, iterations: number = 50, interval: number = 1/25): Point[] {
+    const a = traceBody;
+    const path: Point[] = [];
+    for (let i = 0; i < iterations; i++) {
+      for (const otherBody of this.bodies) {
+        const b = otherBody;
+        if (a === b)
+          continue;
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const minDist = a.radius * a.radius + b.radius * b.radius;
+        const distSqr = Math.max(minDist, dx * dx + dy * dy)
+        const dist = Math.sqrt(distSqr);
+        const force = this.gravity * a.mass * b.mass / distSqr;
+        const forceX = dx / dist * force * interval;
+        const forceY = dy / dist * force * interval;
+        a.vx += forceX / a.mass;
+        a.vy += forceY / a.mass;
+      }
+      a.step(interval);
+      path.push({ x: a.x, y: a.y });
+    }
+    return path;
   }
 
   public step(dt: number): void {

@@ -1,7 +1,7 @@
 import GameEventHandler from "~/game/GameEventHandler";
 import Point from "~/game/Point";
 import Body from "~/game/simulation/Body";
-import randomColorHex from "~/game/simulation/utils/randomColor";
+import randomBodyColor from "~/game/simulation/utils/randomColor";
 
 export default class GameController extends GameEventHandler {
 
@@ -21,19 +21,35 @@ export default class GameController extends GameEventHandler {
   private drawCreateHint(ctx: CanvasRenderingContext2D) {
     if (!this.pressOrigin)
       return;
-    const cursor = this.getGame().getCursor();
+    const sim = this.getSimulation();
+    const { x: cursorX, y: cursorY } = this.getGame().getCursor();
     const { x: originX, y: originY } = this.pressOrigin;
     ctx.save();
-    ctx.strokeStyle = '#333';
+    ctx.strokeStyle = '#555';
     ctx.lineCap = 'round';
+    // Body origin
     ctx.beginPath();
     ctx.lineWidth = 0.5;
     ctx.arc(originX, originY, this.createRadius, 0, 2 * Math.PI)
     ctx.stroke();
+    // Velocity vector
     ctx.beginPath();
     ctx.lineWidth = 2;
     ctx.moveTo(originX, originY);
-    ctx.lineTo(cursor.x, cursor.y);
+    ctx.lineTo(cursorX, cursorY);
+    ctx.stroke();
+    // Trajectory
+    const traceBody = new Body(originX, originY);
+    traceBody.radius = this.createRadius;
+    traceBody.mass = this.createMass;
+    traceBody.vx = (originX - cursorX) * this.createForce;
+    traceBody.vy = (originY - cursorY) * this.createForce;
+    ctx.beginPath();
+    ctx.lineWidth = 0.5;
+    ctx.moveTo(originX, originY);
+    for (const p of sim.tracePath(traceBody)) {
+      ctx.lineTo(p.x, p.y);
+    }
     ctx.stroke();
     ctx.restore();
   }
@@ -62,7 +78,7 @@ export default class GameController extends GameEventHandler {
         body.mass = this.createMass;
         body.vx = (originX - x) * this.createForce;
         body.vy = (originY - y) * this.createForce;
-        body.strokeColor = randomColorHex();
+        body.strokeColor = randomBodyColor();
         sim.getBodies().push(body);
       }
       this.pressOrigin = null;
