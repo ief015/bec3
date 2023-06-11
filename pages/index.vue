@@ -8,14 +8,18 @@
           v-model:selection="tool"
         />
       </div>
+      <HudStats
+        class="absolute bottom-2 left-2 select-none"
+        :stats="game.gameStats"
+      />
       <HudCounter
         class="absolute bottom-2 left-2 right-2 select-none"
         :count="game.bodyCount"
         label="bodies"
       />
-      <HudStats
-        class="absolute bottom-2 left-2 select-none"
-        :stats="game.gameStats"
+      <HudClearBtn
+        class="absolute bottom-2 right-2 pointer-events-auto"
+        @click="onClear"
       />
     </div>
   </div>
@@ -26,5 +30,11 @@ import GameMain from '~/components/game/main.vue';
 
 const game = ref<InstanceType<typeof GameMain>>();
 const tool = ref<string>('create');
+
+const onClear = () => {
+  if (game.value) {
+    game.value.game?.getSimulation().clearBodies();
+  }
+}
 
 </script>
