@@ -1,5 +1,10 @@
 <template>
-  <canvas ref="canvas" @click="onClick">
+  <canvas ref="canvas"
+    @mousedown="onMouseDown"
+    @mouseup="onMouseUp"
+    @touchstart="onTouchDown"
+    @touchend="onTouchUp"
+  >
     Your browser does not support the HTML5 canvas tag.
   </canvas>
 </template>
@@ -32,9 +37,27 @@ const onFrame = (game: GameMain) => {
   bodyCount.value = sim.getBodies().length;
 }
 
-const onClick = (e: MouseEvent) => {
+const onMouseDown = (e: MouseEvent) => {
   if (game.value) {
-    game.value.handleClick(e);
+    game.value.handleMouseDown(e);
+  }
+}
+
+const onMouseUp = (e: MouseEvent) => {
+  if (game.value) {
+    game.value.handleMouseUp(e);
+  }
+}
+
+const onTouchDown = (e: TouchEvent) => {
+  if (game.value) {
+    game.value.handleTouchDown(e);
+  }
+}
+
+const onTouchUp = (e: TouchEvent) => {
+  if (game.value) {
+    game.value.handleTouchUp(e);
   }
 }
 

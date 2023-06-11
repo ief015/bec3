@@ -1,20 +1,20 @@
-import Point from "~/game/Point";
-import Body from "~/game/simulation/Body";
-import GameStats from "~/game/simulation/GameStats";
+import GameController from "~/game/GameController";
 import Simulation from "~/game/simulation/Simulation";
-import randomColorHex from "~/game/simulation/utils/randomColor";
+import GameStats from "~/game/simulation/GameStats";
+import Point from "~/game/Point";
 
 export type OnFrameCallback = (game: GameMain) => void;
 
 export default class GameMain {
 
   private canvas: HTMLCanvasElement|null = null;
+  private sim: Simulation = new Simulation(this);
+  private controller: GameController = new GameController(this);
   private lastFrameTimestamp: number = performance.now();
   private pausedTimestamp: number = 0;
   private paused: boolean = false;
   private shutdown: boolean = false;
   private cursor: Point = { x: 0, y: 0 };
-  private sim: Simulation = new Simulation(this);
   private handleResizeListener = this.handleResize.bind(this);
   private handleMouseMoveListener = this.handleMouseMove.bind(this);
   private handleTouchMoveListener = this.handleTouchMove.bind(this);
@@ -93,9 +93,16 @@ export default class GameMain {
     return performance.now() - t;
   }
 
+  private preUpdate(dt: number): number {
+    const t = performance.now();
+    this.controller.onPreUpdate(dt);
+    return performance.now() - t;
+  }
+
   private update(dt: number): number {
     const t = performance.now();
     this.sim.step(dt);
+    this.controller.onPostUpdate(dt);
     return performance.now() - t;
   }
 
@@ -105,9 +112,11 @@ export default class GameMain {
     dt: number
   ): number {
     const t = performance.now();
-    this.darkenFill(ctx);
     ctx.save();
+    this.darkenFill(ctx);
+    this.controller.onPreDraw(ctx, dt);
     this.sim.render(ctx, dt);
+    this.controller.onPostDraw(ctx, dt);
     ctx.restore();
     return performance.now() - t;
   }
@@ -115,42 +124,54 @@ export default class GameMain {
   private darkenFill(ctx: CanvasRenderingContext2D) {
     ctx.save();
     ctx.globalCompositeOperation = 'darken';
-    ctx.fillStyle = "rgb(0,0,0,0.2)";
+    ctx.fillStyle = 'rgb(0,0,0,0.2)';
     ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
     ctx.restore();
   }
 
   private handleMouseMove(e: MouseEvent) {
-    this.cursor.x = e.x;
-    this.cursor.y = e.y;
+    const { x, y } = e;
+    this.cursor.x = x;
+    this.cursor.y = y;
   }
 
   private handleTouchMove(e: TouchEvent) {
+    const { clientX: x, clientY: y } = e.touches[0];
     e.preventDefault();
-    this.cursor.x = e.touches[0].clientX;
-    this.cursor.y = e.touches[0].clientY;
+    this.cursor.x = x;
+    this.cursor.y = y;
   }
 
-  public handleClick(e: MouseEvent) {
-    const body = new Body(e.x, e.y);
-    body.radius = 2;
-    body.mass = 1;
-    body.vx = 0;
-    body.vy = 0;
-    body.strokeColor = randomColorHex();
-    this.sim.getBodies().push(body);
+  public handleMouseDown(e: MouseEvent) {
+    this.controller.onPressDown(e.x, e.y);
+  }
+
+  public handleMouseUp(e: MouseEvent) {
+    this.controller.onPressUp(e.x, e.y);
+  }
+
+  public handleTouchDown(e: TouchEvent) {
+    const { clientX: x, clientY: y } = e.touches[0];
+    this.controller.onPressDown(x, y);
+  }
+
+  public handleTouchUp(e: TouchEvent) {
+    const { clientX: x, clientY: y } = e.touches[0];
+    this.controller.onPressUp(x, y);
   }
 
   private handleResize() {
     if (this.canvas) {
-      this.canvas.width = window.innerWidth;
-      this.canvas.height = window.innerHeight;
+      const { innerWidth: width, innerHeight: height } = window;
+      this.canvas.width = width;
+      this.canvas.height = height;
+      this.controller.onResize(width, height);
     }
   }
 
   private handleFrame(startTime: number) {
     const dt = startTime - this.lastFrameTimestamp;
-    this.stats.updateTimeMs = this.update(dt / 1000);
+    this.stats.updateTimeMs = this.preUpdate(dt / 1000) + this.update(dt / 1000);
     this.sim.clearBodiesOutsideRect(0, 0, window.innerWidth, window.innerHeight);
     if (this.canvas) {
       const ctx = this.canvas.getContext('2d');
