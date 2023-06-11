@@ -20,7 +20,7 @@ export default class Simulation {
     this.bodies.splice(0, this.bodies.length);
   }
 
-  public clearBodiesOutsideRect(top: number, left: number, bottom: number, right: number): void {
+  public clearBodiesOutsideRect(left: number, top: number, right: number, bottom: number): void {
     for (let i = this.bodies.length - 1; i >= 0; i--) {
       const b = this.bodies[i];
       if (b.x < left || b.x > right || b.y < top || b.y > bottom) {
