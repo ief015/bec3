@@ -1,0 +1,14 @@
+runtime: nodejs16
+
+handlers:
+  - url: /_nuxt
+    static_dir: dist/_nuxt
+    secure: always
+  - url: /(.*\.(gif|png|jpg|ico|txt))$
+    static_files: static/\1
+    upload: static/.*\.(gif|png|jpg|ico|txt)$
+    secure: always
+  - url: /.*
+    static_files: dist/index.html
+    upload: dist/index.html
+    secure: always

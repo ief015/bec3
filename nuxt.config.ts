@@ -3,6 +3,9 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
   ],
+  routeRules: {
+    '/': { static: true },
+  },
   vite: {
     vue: {
       script: {
