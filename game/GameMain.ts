@@ -124,7 +124,7 @@ export default class GameMain {
   private darkenFill(ctx: CanvasRenderingContext2D) {
     ctx.save();
     ctx.globalCompositeOperation = 'darken';
-    ctx.fillStyle = 'rgb(0,0,0,0.2)';
+    ctx.fillStyle = 'rgb(0,0,0,0.25)';
     ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
     ctx.restore();
   }
