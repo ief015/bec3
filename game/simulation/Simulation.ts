@@ -17,6 +17,10 @@ export default class Simulation {
     return this.bodies;
   }
 
+  public pushBodies(...bodies: Body[]): void {
+    this.bodies.push(...bodies);
+  }
+
   public clearBodies(): void {
     this.bodies.splice(0, this.bodies.length);
   }
