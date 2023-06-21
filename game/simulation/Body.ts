@@ -10,14 +10,30 @@ export default class Body {
   public mass: number = 1;
   public strokeColor: string = 'white';
 
-  constructor(
-    x: number = 0,
-    y: number = 0,
-  ) {
-    this.x = x;
-    this.y = y;
-    this.lx = x;
-    this.ly = y;
+  constructor ();
+  constructor (copy: Body);
+  constructor (x: number, y: number, vx?: number, vy?: number, radius?: number, mass?: number, strokeColor?: string);
+  constructor(x?: Body|number, y?: number, vx?: number, vy?: number, radius?: number, mass?: number, strokeColor?: string) {
+    if (x instanceof Body) {
+      this.x = x.x;
+      this.y = x.y;
+      this.lx = x.lx;
+      this.ly = x.ly;
+      this.vx = x.vx;
+      this.vy = x.vy;
+      this.radius = x.radius;
+      this.mass = x.mass;
+      this.strokeColor = x.strokeColor;
+    }
+    else if (typeof x == 'number') {
+      this.x = x;
+      this.y = y!;
+      vx && (this.vx = vx);
+      vy && (this.vy = vy);
+      radius && (this.radius = radius);
+      mass && (this.mass = mass);
+      strokeColor && (this.strokeColor = strokeColor);
+    }
   }
 
   public draw(ctx: CanvasRenderingContext2D) {
