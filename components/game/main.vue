@@ -27,14 +27,14 @@ const bodyCount = ref<number>(0);
 
 const onStart = (game: GameMain) => {
   const sim = game.getSimulation();
-  sim.getBodies().push(
+  sim.pushBodies(
     ...generateFigure8(window.innerWidth / 2, window.innerHeight / 2, 200),
   );
 }
 
 const onFrame = (game: GameMain) => {
   const sim = game.getSimulation();
-  gameStats.value = game.getStats();
+  Object.assign(gameStats.value, game.getStats());
   bodyCount.value = sim.getBodies().length;
 }
 
