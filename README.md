@@ -1,5 +1,7 @@
 # Bec 3
 
+https://bec3-390100.uc.r.appspot.com/
+
 ## Setup
 
 Make sure to install the dependencies:
