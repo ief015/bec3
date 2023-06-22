@@ -2,7 +2,7 @@ import Body from "~/game/simulation/Body";
 import randomBodyColor from "~/game/simulation/utils/randomColor";
 
 /**
- * Generate a figure-8 solution of three bodies.
+ * Generate a three-body solution of a figure-8.
  */
 export default function generateFigure8(x: number = 0, y: number = x, scale: number = 1): Body[] {
 

@@ -2,6 +2,9 @@
   <div>
     <GameMain ref="game" class="fixed w-screen h-screen z-0" />
     <div v-if="game" class="absolute inset-0 z-10 cursor-default pointer-events-none">
+      <div class="absolute top-2 left-2">
+        <LinkGithub class="w-8 h-8" href="https://github.com/ief015/bec3" />
+      </div>
       <div class="relative top-2 flex justify-center">
         <HudToolbar
           class="pointer-events-auto"
