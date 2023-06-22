@@ -1,6 +1,6 @@
 import GameController from "~/game/GameController";
 import Simulation from "~/game/simulation/Simulation";
-import GameStats from "~/game/simulation/GameStats";
+import GameStats from "~/game/GameStats";
 import Point from "~/game/Point";
 
 export type OnFrameCallback = (game: GameMain) => void;

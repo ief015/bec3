@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import GameStats from '~/game/simulation/GameStats';
+import GameStats from '~/game/GameStats';
 
 defineProps<{
   stats?: GameStats;

@@ -36,8 +36,9 @@ const game = ref<InstanceType<typeof GameMain>>();
 const tool = ref<string>('create');
 
 const onClear = () => {
-  if (game.value) {
-    game.value.game?.getSimulation().clearBodies();
+  const sim = game.value?.game?.getSimulation();
+  if (sim) {
+    sim.clearBodies();
   }
 }
 
