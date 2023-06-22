@@ -13,7 +13,7 @@ export default class Simulation {
     this.game = game;
   }
 
-  public getBodies(): Body[] {
+  public getBodies(): Readonly<Body[]> {
     return this.bodies;
   }
 

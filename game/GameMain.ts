@@ -1,6 +1,6 @@
-import GameController from "~/game/GameController";
-import Simulation from "~/game/simulation/Simulation";
+import GameEventHandler from "~/game/GameEventHandler";
 import GameStats from "~/game/GameStats";
+import Simulation from "~/game/simulation/Simulation";
 import Point from "~/game/Point";
 
 export type OnFrameCallback = (game: GameMain) => void;
@@ -9,7 +9,7 @@ export default class GameMain {
 
   private canvas: HTMLCanvasElement|null = null;
   private sim: Simulation = new Simulation(this);
-  private controller: GameController = new GameController(this);
+  private controller?: GameEventHandler;
   private lastFrameTimestamp: number = performance.now();
   private pausedTimestamp: number = 0;
   private paused: boolean = false;
@@ -34,20 +34,28 @@ export default class GameMain {
     this.setCanvas(canvas);
   }
 
-  public getCursor(): Point {
+  public getCursor(): Readonly<Point> {
     return this.cursor;
   }
 
-  public getStats(): GameStats {
-    return { ...this.stats };
+  public getStats(): Readonly<GameStats> {
+    return this.stats;
   }
 
   public getSimulation(): Simulation {
     return this.sim;
   }
 
-  public getController(): GameController {
-    return this.controller;
+  public setController<TGameController extends GameEventHandler>(
+    controllerType?: { new(...args: any[]): TGameController }
+  ): TGameController|undefined {
+    return this.controller = controllerType !== undefined ?
+      new controllerType(this) :
+      undefined;
+  }
+
+  public getController<T extends GameEventHandler>(): T|undefined {
+    return this.controller as T|undefined;
   }
 
   public pause(): void {
@@ -99,14 +107,14 @@ export default class GameMain {
 
   private preUpdate(dt: number): number {
     const t = performance.now();
-    this.controller.onPreUpdate(dt);
+    this.controller?.onPreUpdate(dt);
     return performance.now() - t;
   }
 
   private update(dt: number): number {
     const t = performance.now();
     this.sim.step(dt);
-    this.controller.onPostUpdate(dt);
+    this.controller?.onPostUpdate(dt);
     return performance.now() - t;
   }
 
@@ -118,9 +126,9 @@ export default class GameMain {
     const t = performance.now();
     ctx.save();
     this.darkenFill(ctx);
-    this.controller.onPreDraw(ctx, dt);
+    this.controller?.onPreDraw(ctx, dt);
     this.sim.render(ctx, dt);
-    this.controller.onPostDraw(ctx, dt);
+    this.controller?.onPostDraw(ctx, dt);
     ctx.restore();
     return performance.now() - t;
   }
@@ -147,21 +155,21 @@ export default class GameMain {
   }
 
   public handleMouseDown(e: MouseEvent) {
-    this.controller.onPressDown(e.x, e.y, e.button);
+    this.controller?.onPressDown(e.x, e.y, e.button);
   }
 
   public handleMouseUp(e: MouseEvent) {
-    this.controller.onPressUp(e.x, e.y, e.button);
+    this.controller?.onPressUp(e.x, e.y, e.button);
   }
 
   public handleTouchDown(e: TouchEvent) {
     const { clientX: x, clientY: y } = e.touches[0];
-    this.controller.onPressDown(x, y, 0);
+    this.controller?.onPressDown(x, y, 0);
   }
 
   public handleTouchUp(e: TouchEvent) {
     const { clientX: x, clientY: y } = e.touches[0];
-    this.controller.onPressUp(x, y, 0);
+    this.controller?.onPressUp(x, y, 0);
   }
 
   private handleResize() {
@@ -169,7 +177,7 @@ export default class GameMain {
       const { innerWidth: width, innerHeight: height } = window;
       this.canvas.width = width;
       this.canvas.height = height;
-      this.controller.onResize(width, height);
+      this.controller?.onResize(width, height);
     }
   }
 

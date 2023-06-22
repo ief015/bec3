@@ -13,6 +13,7 @@
 import GameMain from '~/game/GameMain';
 import GameStats from '~/game/GameStats';
 import generateFigure8 from '~/game/simulation/utils/generateFigure8';
+import CreateToolController from '~/game/tools/CreateToolController';
 
 const canvas = ref<HTMLCanvasElement>();
 const game = ref<GameMain>();

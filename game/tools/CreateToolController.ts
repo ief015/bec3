@@ -1,22 +1,31 @@
 import GameEventHandler from "~/game/GameEventHandler";
+import GameMain from "~/game/GameMain";
 import Point from "~/game/Point";
 import Body from "~/game/simulation/Body";
 import randomBodyColor from "~/game/simulation/utils/randomColor";
 
-export default class GameController extends GameEventHandler {
+export default class CreateToolController extends GameEventHandler {
 
   private pressOrigin: Point|null = null;
 
-  private mass: number = 1;
-  private radius: number = 1;
+  private radius: number = 5;
+  private mass: number = 100000;
   private force: number = 5;
 
-  public getMass(): number {
-    return this.mass;
-  }
-
-  public setMass(mass: number) {
-    this.mass = Math.max(Number.EPSILON, mass);
+  constructor(game: GameMain) {
+    super(game);
+    const radius = sessionStorage.getItem('CreateToolController.radius');
+    const mass = sessionStorage.getItem('CreateToolController.mass');
+    const force = sessionStorage.getItem('CreateToolController.force');
+    if (radius) {
+      this.radius = Number(radius);
+    }
+    if (mass) {
+      this.mass = Number(mass);
+    }
+    if (force) {
+      this.force = Number(force);
+    }
   }
 
   public getRadius(): number {
@@ -25,6 +34,16 @@ export default class GameController extends GameEventHandler {
 
   public setRadius(radius: number) {
     this.radius = Math.max(0, radius);
+    sessionStorage.setItem('CreateToolController.radius', String(this.radius));
+  }
+
+  public getMass(): number {
+    return this.mass;
+  }
+
+  public setMass(mass: number) {
+    this.mass = Math.max(Number.EPSILON, mass);
+    sessionStorage.setItem('CreateToolController.mass', String(this.mass));
   }
 
   public getForce(): number {
@@ -33,6 +52,7 @@ export default class GameController extends GameEventHandler {
 
   public setForce(force: number) {
     this.force = force;
+    sessionStorage.setItem('CreateToolController.force', String(this.force));
   }
 
   public onPreUpdate(dt: number) {

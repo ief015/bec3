@@ -27,22 +27,25 @@
 
 <script setup lang="ts">
 import GameMain from '~/game/GameMain';
+import CreateToolController from '~/game/tools/CreateToolController';
 
 const props = defineProps<{
   game: GameMain;
 }>();
 
-const radius = ref<number>(5);
-const mass = ref<number>(100000);
+const getController = () => props.game.getController<CreateToolController>();
+
+const radius = ref<number>(getController()?.getRadius() ?? 5);
+const mass = ref<number>(getController()?.getMass() ?? 100000);
 
 watch(radius, val => {
-  const controller = props.game.getController();
-  controller.setRadius(val);
-}, { immediate: true });
+  const controller = getController();
+  controller?.setRadius(val);
+});
 
 watch(mass, val => {
-  const controller = props.game.getController();
-  controller.setMass(val);
-}, { immediate: true });
+  const controller = getController();
+  controller?.setMass(val);
+});
 
 </script>
