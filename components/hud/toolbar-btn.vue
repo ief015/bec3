@@ -5,17 +5,19 @@
       'btn-outline': isSelected,
       'btn-ghost': !isSelected,
     }"
+    :disabled="disabled"
     @click="onClick"
   >
-    {{ title }}
+    {{ label }}
   </button>
 </template>
 
 <script setup lang="ts">
 
 const props = defineProps<{
-  title?: string;
+  label?: string;
   name?: string;
+  disabled?: boolean;
 }>();
 
 const selection = defineModel<string>('selection', { required: true });

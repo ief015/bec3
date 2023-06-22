@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col gap-2">
     <div class="flex flex-row gap-2 justify-center">
-      <HudToolbarBtn title="Select" name="select" v-model:selection="selection" />
-      <HudToolbarBtn title="Create" name="create" v-model:selection="selection" />
-      <HudToolbarBtn title="Look"   name="look"   v-model:selection="selection" />
+      <HudToolbarBtn label="Select" name="select" v-model:selection="selection" disabled />
+      <HudToolbarBtn label="Create" name="create" v-model:selection="selection" />
+      <HudToolbarBtn label="Look"   name="look"   v-model:selection="selection" disabled />
     </div>
     <div v-if="game">
       <HudControlsCreate
