@@ -1,5 +1,5 @@
 <template>
-  <div class="text-sm text-gray-500">
+  <div class="text-xs text-gray-500">
     <div v-if="stats" class="flex flex-row gap-4">
       <div>
         <div>FPS</div>
