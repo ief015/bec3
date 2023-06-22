@@ -46,6 +46,10 @@ export default class GameMain {
     return this.sim;
   }
 
+  public getController(): GameController {
+    return this.controller;
+  }
+
   public pause(): void {
     if (this.paused)
       return;

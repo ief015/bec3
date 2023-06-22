@@ -6,6 +6,7 @@
         <HudToolbar
           class="pointer-events-auto"
           v-model:selection="tool"
+          :game="game.game"
         />
       </div>
       <HudStats

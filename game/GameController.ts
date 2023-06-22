@@ -8,8 +8,32 @@ export default class GameController extends GameEventHandler {
   private pressOrigin: Point|null = null;
 
   private mass: number = 1;
-  private radius: number = 4;
+  private radius: number = 1;
   private force: number = 5;
+
+  public getMass(): number {
+    return this.mass;
+  }
+
+  public setMass(mass: number) {
+    this.mass = Math.max(Number.EPSILON, mass);
+  }
+
+  public getRadius(): number {
+    return this.radius;
+  }
+
+  public setRadius(radius: number) {
+    this.radius = Math.max(0, radius);
+  }
+
+  public getForce(): number {
+    return this.force;
+  }
+
+  public setForce(force: number) {
+    this.force = force;
+  }
 
   public onPreUpdate(dt: number) {
 

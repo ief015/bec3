@@ -24,7 +24,7 @@ const gameStats = ref<GameStats>({
 });
 const bodyCount = ref<number>(0);
 
-const onPreStart = (game: GameMain) => {
+const onStart = (game: GameMain) => {
   const sim = game.getSimulation();
   sim.getBodies().push(
     ...generateFigure8(window.innerWidth / 2, window.innerHeight / 2, 200),
@@ -65,8 +65,8 @@ watch(canvas, () => {
   if (canvas.value) {
     game.value?.destroy();
     game.value = new GameMain(canvas.value);
-    onPreStart(game.value);
     game.value.start(onFrame);
+    onStart(game.value);
   }
 }, { immediate: true });
 
