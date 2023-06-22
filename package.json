@@ -4,9 +4,12 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+    "clean": "nuxt clean",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "deploy": "nuxt generate && gcloud app deploy app.yaml --project bec3-390100",
+    "deploy-no-build": "gcloud app deploy app.yaml --project bec3-390100"
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.7.0",
