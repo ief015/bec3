@@ -17,6 +17,7 @@
 <script setup lang="ts">
 import GameMain from '~/game/GameMain';
 import CreateToolController from '~/game/tools/CreateToolController';
+import LookToolController from '~/game/tools/LookToolController';
 
 const props = defineProps<{
   game?: GameMain;
@@ -34,8 +35,7 @@ watch([ () => props.game, selection ], () => {
       props.game?.setController(CreateToolController);
       break;
     case 'look':
-      console.warn("look not yet implemented");
-      props.game?.setController();
+      props.game?.setController(LookToolController);
       break;
   }
 }, { immediate: true });

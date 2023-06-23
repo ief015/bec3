@@ -65,12 +65,12 @@ export default class CreateToolController extends GameEventHandler {
 
   private drawCreateHint(ctx: CanvasRenderingContext2D, style: string = '#555') {
     const sim = this.getSimulation();
-    const { x: cursorX, y: cursorY } = this.getGame().getCursor();
+    const { x: cursorX, y: cursorY } = this.getGame().getCursorCamera();
     ctx.save();
     ctx.strokeStyle = style;
     ctx.lineCap = 'round';
     if (this.pressOrigin) {
-      const { x: originX, y: originY } = this.pressOrigin;
+      const { x: originX, y: originY } = this.getCamera().transformPoint(this.pressOrigin);
       // Body origin
       ctx.beginPath();
       ctx.lineWidth = 0.5;
@@ -99,7 +99,7 @@ export default class CreateToolController extends GameEventHandler {
       // Body cursor
       ctx.beginPath();
       ctx.lineWidth = 0.5;
-      ctx.arc(cursorX, cursorY, this.radius, 0, 2 * Math.PI)
+      ctx.arc(cursorX, cursorY, this.radius, 0, 2 * Math.PI);
       ctx.stroke();
     }
     ctx.restore();
@@ -122,13 +122,14 @@ export default class CreateToolController extends GameEventHandler {
   public onPressUp(x: number, y: number, button: number) {
     if (button == 0) {
       if (this.pressOrigin) {
-        const { x: originX, y: originY } = this.pressOrigin;
+        const { x: tx, y: ty } = this.getCamera().transformPoint({ x, y });
+        const { x: originX, y: originY } = this.getCamera().transformPoint(this.pressOrigin);
         const sim = this.getSimulation();
         const body = new Body(originX, originY);
         body.radius = this.radius;
         body.mass = this.mass;
-        body.vx = (originX - x) * this.force;
-        body.vy = (originY - y) * this.force;
+        body.vx = (originX - tx) * this.force;
+        body.vy = (originY - ty) * this.force;
         body.strokeColor = randomBodyColor();
         sim.pushBodies(body);
       }

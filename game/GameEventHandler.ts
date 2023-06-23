@@ -1,4 +1,6 @@
+import Camera from "~/game/Camera";
 import GameMain from "~/game/GameMain";
+import Point from "~/game/Point";
 import Simulation from "~/game/simulation/Simulation";
 
 export default class GameEventHandler {
@@ -15,6 +17,14 @@ export default class GameEventHandler {
 
   public getSimulation(): Simulation {
     return this.game.getSimulation();
+  }
+
+  public getCamera(): Camera {
+    return this.game.getCamera();
+  }
+
+  public getCursor(): Readonly<Point> {
+    return this.game.getCursor();
   }
 
   /**
@@ -66,5 +76,19 @@ export default class GameEventHandler {
   public onPressUp(x: number, y: number, button: number) {
 
   };
+
+  /**
+   * Cursor moved.
+   */
+  public onCursorMove(x: number, y: number, dx: number, dy: number) {
+
+  }
+
+  /**
+   * Wheel moved.
+   */
+  public onWheel(dx: number, dy: number, dz: number) {
+
+  }
 
 }

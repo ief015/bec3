@@ -2,40 +2,45 @@ import GameEventHandler from "~/game/GameEventHandler";
 import GameStats from "~/game/GameStats";
 import Simulation from "~/game/simulation/Simulation";
 import Point from "~/game/Point";
+import Camera from "~/game/Camera";
 
 export type OnFrameCallback = (game: GameMain) => void;
 
 export default class GameMain {
 
-  private canvas: HTMLCanvasElement|null = null;
+  private canvas: HTMLCanvasElement;
   private sim: Simulation = new Simulation(this);
   private controller?: GameEventHandler;
+  private camera: Camera = new Camera();
   private lastFrameTimestamp: number = performance.now();
   private pausedTimestamp: number = 0;
   private paused: boolean = false;
   private shutdown: boolean = false;
   private cursor: Point = { x: 0, y: 0 };
-  private handleResizeListener = this.handleResize.bind(this);
-  private handleMouseMoveListener = this.handleMouseMove.bind(this);
-  private handleTouchMoveListener = this.handleTouchMove.bind(this);
-  private handleBlurListener = this.pause.bind(this);
-  private handleFocusListener = this.resume.bind(this);
-
   private stats: GameStats = {
     frameTimeMs: 0,
     updateTimeMs: 0,
     renderTimeMs: 0,
     fps: 0,
   }
-
+  private handleResizeListener = this.handleResize.bind(this);
+  private handleMouseMoveListener = this.handleMouseMove.bind(this);
+  private handleTouchMoveListener = this.handleTouchMove.bind(this);
+  private handleBlurListener = this.pause.bind(this);
+  private handleFocusListener = this.resume.bind(this);
   private onFrameCb?: OnFrameCallback;
 
   constructor(canvas: HTMLCanvasElement) {
+    this.canvas = canvas;
     this.setCanvas(canvas);
   }
 
   public getCursor(): Readonly<Point> {
     return this.cursor;
+  }
+
+  public getCursorCamera(): Readonly<Point> {
+    return this.camera.transformPoint(this.cursor);
   }
 
   public getStats(): Readonly<GameStats> {
@@ -46,6 +51,10 @@ export default class GameMain {
     return this.sim;
   }
 
+  public getController<T extends GameEventHandler>(): T|undefined {
+    return this.controller as T|undefined;
+  }
+
   public setController<TGameController extends GameEventHandler>(
     controllerType?: { new(...args: any[]): TGameController }
   ): TGameController|undefined {
@@ -54,8 +63,8 @@ export default class GameMain {
       undefined;
   }
 
-  public getController<T extends GameEventHandler>(): T|undefined {
-    return this.controller as T|undefined;
+  public getCamera(): Camera {
+    return this.camera;
   }
 
   public pause(): void {
@@ -107,6 +116,7 @@ export default class GameMain {
 
   private preUpdate(dt: number): number {
     const t = performance.now();
+    //this.sim.clearBodiesOutsideRect(0, 0, window.innerWidth, window.innerHeight);
     this.controller?.onPreUpdate(dt);
     return performance.now() - t;
   }
@@ -126,6 +136,7 @@ export default class GameMain {
     const t = performance.now();
     ctx.save();
     this.darkenFill(ctx);
+    this.camera.apply(ctx);
     this.controller?.onPreDraw(ctx, dt);
     this.sim.render(ctx, dt);
     this.controller?.onPostDraw(ctx, dt);
@@ -143,15 +154,19 @@ export default class GameMain {
 
   private handleMouseMove(e: MouseEvent) {
     const { x, y } = e;
+    const { x: lx, y: ly } = this.cursor;
     this.cursor.x = x;
     this.cursor.y = y;
+    this.controller?.onCursorMove(x, y, x - lx, y - ly);
   }
 
   private handleTouchMove(e: TouchEvent) {
-    const { clientX: x, clientY: y } = e.touches[0];
     e.preventDefault();
+    const { clientX: x, clientY: y } = e.touches[0];
+    const { x: lx, y: ly } = this.cursor;
     this.cursor.x = x;
     this.cursor.y = y;
+    this.controller?.onCursorMove(x, y, x - lx, y - ly);
   }
 
   public handleMouseDown(e: MouseEvent) {
@@ -172,6 +187,11 @@ export default class GameMain {
     this.controller?.onPressUp(x, y, 0);
   }
 
+  public handleWheel(e: WheelEvent) {
+    const { deltaX, deltaY, deltaZ } = e;
+    this.controller?.onWheel(deltaX, deltaY, deltaZ);
+  }
+
   private handleResize() {
     if (this.canvas) {
       const { innerWidth: width, innerHeight: height } = window;
@@ -184,7 +204,6 @@ export default class GameMain {
   private handleFrame(startTime: number) {
     const dt = startTime - this.lastFrameTimestamp;
     this.stats.updateTimeMs = this.preUpdate(dt / 1000) + this.update(dt / 1000);
-    this.sim.clearBodiesOutsideRect(0, 0, window.innerWidth, window.innerHeight);
     if (this.canvas) {
       const ctx = this.canvas.getContext('2d');
       if (ctx) {

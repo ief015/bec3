@@ -4,6 +4,7 @@
     @mouseup="onMouseUp"
     @touchstart="onTouchDown"
     @touchend="onTouchUp"
+    @wheel="onWheel"
   >
     Your browser does not support the HTML5 canvas tag.
   </canvas>
@@ -13,7 +14,6 @@
 import GameMain from '~/game/GameMain';
 import GameStats from '~/game/GameStats';
 import generateFigure8 from '~/game/simulation/utils/generateFigure8';
-import CreateToolController from '~/game/tools/CreateToolController';
 
 const canvas = ref<HTMLCanvasElement>();
 const game = ref<GameMain>();
@@ -27,8 +27,9 @@ const bodyCount = ref<number>(0);
 
 const onStart = (game: GameMain) => {
   const sim = game.getSimulation();
+  const scale = Math.min(window.innerWidth, window.innerHeight) / 5;
   sim.pushBodies(
-    ...generateFigure8(window.innerWidth / 2, window.innerHeight / 2, 200),
+    ...generateFigure8(0, 0, scale),
   );
 }
 
@@ -59,6 +60,12 @@ const onTouchDown = (e: TouchEvent) => {
 const onTouchUp = (e: TouchEvent) => {
   if (game.value) {
     game.value.handleTouchUp(e);
+  }
+}
+
+const onWheel = (e: WheelEvent) => {
+  if (game.value) {
+    game.value.handleWheel(e);
   }
 }
 
