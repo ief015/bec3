@@ -35,16 +35,14 @@ export default class LookToolController extends GameEventHandler {
 
   public onCursorMove(x: number, y: number, dx: number, dy: number): void {
     if (this.moving) {
-      const t1 = this.getCamera().transformPoint({ x, y });
-      const t2 = this.getCamera().transformPoint({ x: x - dx, y: y - dy });
-      dx = t2.x - t1.x;
-      dy = t2.y - t1.y;
-      this.getGame().getCamera().move(dx, dy);
+      const cam = this.getCamera();
+      cam.move(-dx, -dy);
     }
   }
 
   public onWheel(dx: number, dy: number, dz: number) {
-    this.getGame().getCamera().zoomBy(1 - dy / 1000);
+    const cam = this.getCamera();
+    cam.zoomBy(1 - dy / 1000);
   }
 
 }
