@@ -7,7 +7,6 @@
       </div>
       <div class="relative top-2 flex justify-center">
         <HudToolbar
-          class="pointer-events-auto"
           v-model:selection="tool"
           :game="game.game"
         />

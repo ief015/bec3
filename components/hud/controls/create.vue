@@ -5,7 +5,7 @@
         Radius
       </label>
       <input
-        class="input input-bordered input-ghost input-xs"
+        class="input input-bordered input-ghost input-xs pointer-events-auto"
         type="number"
         v-model="radius"
         min="0"
@@ -16,7 +16,7 @@
         Mass
       </label>
       <input
-        class="input input-bordered input-ghost input-xs"
+        class="input input-bordered input-ghost input-xs pointer-events-auto"
         type="number"
         v-model="mass"
         :min="0.000001"
