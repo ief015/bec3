@@ -65,6 +65,7 @@ export default class CreateToolController extends GameEventHandler {
 
   private drawCreateHint(ctx: CanvasRenderingContext2D, style: string = '#555') {
     const sim = this.getSimulation();
+    const cam = this.getCamera();
     const { x: cursorX, y: cursorY } = this.getGame().getCursorCamera();
     ctx.save();
     ctx.strokeStyle = style;
@@ -73,12 +74,12 @@ export default class CreateToolController extends GameEventHandler {
       const { x: originX, y: originY } = this.getCamera().toCameraSpace(this.pressOrigin);
       // Body origin
       ctx.beginPath();
-      ctx.lineWidth = 0.5;
+      ctx.lineWidth = 0.5 / cam.getZoom();
       ctx.arc(originX, originY, this.radius, 0, 2 * Math.PI)
       ctx.stroke();
       // Velocity vector
       ctx.beginPath();
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 2 / cam.getZoom();
       ctx.moveTo(originX, originY);
       ctx.lineTo(cursorX, cursorY);
       ctx.stroke();
@@ -89,7 +90,7 @@ export default class CreateToolController extends GameEventHandler {
       traceBody.vx = (originX - cursorX) * this.force;
       traceBody.vy = (originY - cursorY) * this.force;
       ctx.beginPath();
-      ctx.lineWidth = 0.5;
+      ctx.lineWidth = 0.5 / cam.getZoom();
       ctx.moveTo(originX, originY);
       for (const p of sim.tracePath(traceBody)) {
         ctx.lineTo(p.x, p.y);
@@ -98,7 +99,7 @@ export default class CreateToolController extends GameEventHandler {
     } else {
       // Body cursor
       ctx.beginPath();
-      ctx.lineWidth = 0.5;
+      ctx.lineWidth = 0.5 / cam.getZoom();
       ctx.arc(cursorX, cursorY, this.radius, 0, 2 * Math.PI);
       ctx.stroke();
     }
