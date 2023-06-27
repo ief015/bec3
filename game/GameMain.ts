@@ -9,7 +9,7 @@ export type OnFrameCallback = (game: GameMain) => void;
 export default class GameMain {
 
   private canvas: HTMLCanvasElement;
-  private sim: Simulation = new Simulation(this);
+  private sim: Simulation = new Simulation();
   private controller?: GameEventHandler;
   private camera: Camera = new Camera();
   private lastFrameTimestamp: number = performance.now();
@@ -40,7 +40,7 @@ export default class GameMain {
   }
 
   public getCursorCamera(): Readonly<Point> {
-    return this.camera.transformPoint(this.cursor);
+    return this.camera.toCameraSpace(this.cursor);
   }
 
   public getStats(): Readonly<GameStats> {
@@ -88,6 +88,7 @@ export default class GameMain {
 
   public setCanvas(canvas: HTMLCanvasElement): void {
     this.canvas = canvas;
+    this.camera.setPosition(window.innerWidth / 2, window.innerHeight / 2);
     this.handleResizeListener();
   }
 
@@ -117,6 +118,7 @@ export default class GameMain {
   private preUpdate(dt: number): number {
     const t = performance.now();
     //this.sim.clearBodiesOutsideRect(0, 0, window.innerWidth, window.innerHeight);
+    //this.camera.rotateRad(dt);
     this.controller?.onPreUpdate(dt);
     return performance.now() - t;
   }
@@ -155,9 +157,11 @@ export default class GameMain {
   private handleMouseMove(e: MouseEvent) {
     const { x, y } = e;
     const { x: lx, y: ly } = this.cursor;
+    const dx = x - lx;
+    const dy = y - ly;
     this.cursor.x = x;
     this.cursor.y = y;
-    this.controller?.onCursorMove(x, y, x - lx, y - ly);
+    this.controller?.onCursorMove(x, y, dx, dy);
   }
 
   private handleTouchMove(e: TouchEvent) {

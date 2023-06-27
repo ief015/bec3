@@ -2,43 +2,66 @@ import Point from "~/game/Point";
 
 export default class Camera {
 
-  private position: Point;
   private rotation: number;
   private zoom: number;
-  private activeMatrix: DOMMatrix = new DOMMatrix();
+
+  private transform: DOMMatrix = new DOMMatrix();
 
   constructor(
     position: Point = { x: 0, y: 0 },
     rotation: number = 0,
     zoom: number = 1,
   ) {
-    this.position = position;
     this.rotation = rotation;
     this.zoom = zoom;
+    this.transform.translateSelf(position.x, position.y);
+    this.transform.rotateSelf(rotation);
+    this.transform.scaleSelf(zoom, zoom);
   }
 
-  public getPosition(): Readonly<Point> {
-    return this.position;
+  public getPosition(): Point {
+    const pos = this.transform.transformPoint({ x: 0, y: 0 });
+    return { x: pos.x, y: pos.y };
   }
 
-  public setPosition(position: Point): void {
-    this.position.x = position.x;
-    this.position.y = position.y;
-  }
-
-  public move(x: number, y: number): void;
-  public move(delta: Point): void;
-  public move(_x: Point|number, _y?: number): void {
-    if (typeof _x == 'number') {
-      const x = _x;
-      const y = _y!;
-      this.position.x += x;
-      this.position.y += y;
+  public setPosition(x: number, y: number): void;
+  public setPosition(position: Point): void;
+  public setPosition(_x_position: Point|number, _y?: number): void {
+    let x: number;
+    let y: number;
+    if (typeof _x_position == 'number') {
+      x = _x_position;
+      y = _y!;
     } else {
-      const { x, y } = _x;
-      this.position.x += x;
-      this.position.y += y;
+      x = _x_position.x;
+      y = _x_position.y;
     }
+    const p0 = this.transform.transformPoint({ x: 0, y: 0 });
+    const pos = this.transform
+      .inverse()
+      .translate(p0.x, p0.y)
+      .transformPoint({ x: x, y: y });
+    this.transform.translateSelf(pos.x, pos.y);
+  }
+
+  public move(dx: number, dy: number): void;
+  public move(delta: Point): void;
+  public move(_dx_delta: Point|number, _dy?: number): void {
+    let dx: number;
+    let dy: number;
+    if (typeof _dx_delta == 'number') {
+      dx = _dx_delta;
+      dy = _dy!;
+    } else {
+      dx = _dx_delta.x;
+      dy = _dx_delta.y;
+    }
+    const p0 = this.transform.transformPoint({ x: 0, y: 0 });
+    const pan = this.transform
+      .inverse()
+      .translate(p0.x, p0.y)
+      .transformPoint({ x: dx, y: dy });
+    this.transform.translateSelf(pan.x, pan.y);
   }
 
   public getRotate(): number {
@@ -46,15 +69,20 @@ export default class Camera {
   }
 
   public setRotate(rotation: number): void {
+    this.transform.rotateSelf(-this.rotation);
     this.rotation = rotation;
+    this.transform.rotateSelf(rotation);
   }
 
   public rotateRad(radians: number): void {
     this.rotation += radians;
+    this.transform.rotateSelf(radians);
   }
 
   public rotateDeg(degrees: number): void {
-    this.rotation += degrees * Math.PI / 180;
+    const radians = degrees * Math.PI / 180;
+    this.rotation += radians;
+    this.transform.rotateSelf(radians);
   }
 
   public getZoom(): number {
@@ -62,31 +90,30 @@ export default class Camera {
   }
 
   public setZoom(zoom: number): void {
+    this.transform.scaleSelf(1 / this.zoom, 1 / this.zoom);
     this.zoom = Math.max(Number.EPSILON, zoom);
+    this.transform.scaleSelf(this.zoom, this.zoom);
   }
 
-  public zoomBy(factor: number): void {
+  public zoomBy(factor: number, origin?: Point): void {
+    origin && this.transform.translateSelf(origin.x, origin.y);
+    this.transform.scaleSelf(factor, factor);
+    origin && this.transform.translateSelf(-origin.x, -origin.y);
     this.zoom *= factor;
   }
 
-  public getActiveMatrix(): Readonly<DOMMatrix> {
-    return this.activeMatrix;
+  public getTransform(): Readonly<DOMMatrix> {
+    return this.transform;
   }
 
-  public transformPoint(point: Point): Point {
-    const t = this.activeMatrix.inverse().transformPoint(point);
+  public toCameraSpace(point: Point): Point {
+    const t = this.transform.inverse().transformPoint(point);
     return { x: t.x, y: t.y };
   }
 
   public apply(ctx: CanvasRenderingContext2D): void {
-    const { position, rotation, zoom } = this;
-    const halfw = ctx.canvas.width / 2 * zoom;
-    const halfh = ctx.canvas.height / 2 * zoom;
-    ctx.translate(halfw, halfh);
-    ctx.rotate(rotation);
-    ctx.translate(-position.x, -position.y);
-    ctx.scale(zoom, zoom);
-    this.activeMatrix = ctx.getTransform();
+    const t = ctx.getTransform().multiplySelf(this.transform);
+    ctx.setTransform(t);
   }
 
 }

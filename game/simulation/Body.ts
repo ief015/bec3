@@ -39,7 +39,6 @@ export default class Body {
   public draw(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
     ctx.lineWidth = this.radius * 2;
-    ctx.lineCap = 'round';
     ctx.strokeStyle = this.strokeColor;
     ctx.moveTo(this.lx, this.ly);
     ctx.lineTo(this.x, this.y);

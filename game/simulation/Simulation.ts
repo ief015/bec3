@@ -4,14 +4,9 @@ import Body from "~/game/simulation/Body";
 
 export default class Simulation {
 
-  private game: GameMain;
   private bodies: Body[] = [];
   public gravity: number = 1; // 6.67430e-11;
   public timeScale: number = 1; // higher values decrease accuracy
-
-  constructor(game: GameMain) {
-    this.game = game;
-  }
 
   public getBodies(): Readonly<Body[]> {
     return this.bodies;
@@ -96,6 +91,8 @@ export default class Simulation {
   }
 
   private drawBodies(ctx: CanvasRenderingContext2D) {
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
     for (const b of this.bodies) {
       b.draw(ctx);
     }

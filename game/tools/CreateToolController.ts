@@ -70,7 +70,7 @@ export default class CreateToolController extends GameEventHandler {
     ctx.strokeStyle = style;
     ctx.lineCap = 'round';
     if (this.pressOrigin) {
-      const { x: originX, y: originY } = this.getCamera().transformPoint(this.pressOrigin);
+      const { x: originX, y: originY } = this.getCamera().toCameraSpace(this.pressOrigin);
       // Body origin
       ctx.beginPath();
       ctx.lineWidth = 0.5;
@@ -122,8 +122,8 @@ export default class CreateToolController extends GameEventHandler {
   public onPressUp(x: number, y: number, button: number) {
     if (button == 0) {
       if (this.pressOrigin) {
-        const { x: tx, y: ty } = this.getCamera().transformPoint({ x, y });
-        const { x: originX, y: originY } = this.getCamera().transformPoint(this.pressOrigin);
+        const { x: tx, y: ty } = this.getCamera().toCameraSpace({ x, y });
+        const { x: originX, y: originY } = this.getCamera().toCameraSpace(this.pressOrigin);
         const sim = this.getSimulation();
         const body = new Body(originX, originY);
         body.radius = this.radius;
