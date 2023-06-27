@@ -37,6 +37,8 @@ export default class Body {
   }
 
   public draw(ctx: CanvasRenderingContext2D) {
+    if (this.radius <= 0)
+      return;
     ctx.beginPath();
     ctx.lineWidth = this.radius * 2;
     ctx.strokeStyle = this.strokeColor;
