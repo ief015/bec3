@@ -26,6 +26,8 @@ export default class GameMain {
   private handleResizeListener = this.handleResize.bind(this);
   private handleMouseMoveListener = this.handleMouseMove.bind(this);
   private handleTouchMoveListener = this.handleTouchMove.bind(this);
+  private handleKeyDownListener = this.handleKeyDown.bind(this);
+  private handleKeyUpListener = this.handleKeyUp.bind(this);
   private handleBlurListener = this.pause.bind(this);
   private handleFocusListener = this.resume.bind(this);
   private onFrameCb?: OnFrameCallback;
@@ -98,6 +100,8 @@ export default class GameMain {
     addEventListener('resize', this.handleResizeListener);
     addEventListener('mousemove', this.handleMouseMoveListener);
     addEventListener('touchmove', this.handleTouchMoveListener);
+    addEventListener('keydown', this.handleKeyDownListener);
+    addEventListener('keyup', this.handleKeyUpListener);
     addEventListener('blur', this.handleBlurListener);
     addEventListener('focus', this.handleFocusListener);
     requestAnimationFrame(this.handleFrame.bind(this));
@@ -109,6 +113,8 @@ export default class GameMain {
     removeEventListener('resize', this.handleResizeListener);
     removeEventListener('mousemove', this.handleMouseMoveListener);
     removeEventListener('touchmove', this.handleTouchMoveListener);
+    removeEventListener('keydown', this.handleKeyDownListener);
+    removeEventListener('keyup', this.handleKeyUpListener);
     removeEventListener('blur', this.handleBlurListener);
     removeEventListener('focus', this.handleFocusListener);
     this.shutdown = true;
@@ -189,6 +195,14 @@ export default class GameMain {
   public handleTouchUp(e: TouchEvent) {
     const { clientX: x, clientY: y } = e.touches[0];
     this.controller?.onPressUp(x, y, 0);
+  }
+
+  private handleKeyDown(e: KeyboardEvent) {
+    this.controller?.onKeyDown(e.key);
+  }
+
+  private handleKeyUp(e: KeyboardEvent) {
+    this.controller?.onKeyUp(e.key);
   }
 
   public handleWheel(e: WheelEvent) {

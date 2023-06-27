@@ -78,6 +78,20 @@ export default class GameEventHandler {
   };
 
   /**
+   * Key pressed.
+   */
+  public onKeyDown(key: string) {
+
+  }
+
+  /**
+   * Key released.
+   */
+  public onKeyUp(key: string) {
+
+  }
+
+  /**
    * Cursor moved.
    */
   public onCursorMove(x: number, y: number, dx: number, dy: number) {
