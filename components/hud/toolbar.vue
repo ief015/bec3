@@ -1,7 +1,9 @@
 <template>
   <div class="flex flex-col gap-2">
     <div class="flex flex-row gap-2 justify-center">
-      <HudToolbarBtn label="Select" name="select" v-model:selection="selection" disabled />
+      <div class="tooltip tooltip-bottom" data-tip="Coming soon">
+        <HudToolbarBtn label="Select" name="select" v-model:selection="selection" disabled />
+      </div>
       <HudToolbarBtn label="Create" name="create" v-model:selection="selection" />
       <HudToolbarBtn label="Look"   name="look"   v-model:selection="selection" />
     </div>
