@@ -32,27 +32,30 @@ export default class CreateToolController extends GameEventHandler {
     return this.radius;
   }
 
-  public setRadius(radius: number) {
+  public setRadius(radius: number): number {
     this.radius = Math.max(0, radius);
     sessionStorage.setItem('CreateToolController.radius', String(this.radius));
+    return this.radius;
   }
 
   public getMass(): number {
     return this.mass;
   }
 
-  public setMass(mass: number) {
+  public setMass(mass: number): number {
     this.mass = Math.max(Number.EPSILON, mass);
     sessionStorage.setItem('CreateToolController.mass', String(this.mass));
+    return this.mass;
   }
 
   public getForce(): number {
     return this.force;
   }
 
-  public setForce(force: number) {
+  public setForce(force: number): number {
     this.force = force;
     sessionStorage.setItem('CreateToolController.force', String(this.force));
+    return this.force;
   }
 
   public onPreUpdate(dt: number) {

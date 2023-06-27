@@ -19,7 +19,7 @@
         class="input input-bordered input-ghost input-xs pointer-events-auto"
         type="number"
         v-model="mass"
-        :min="0.000001"
+        :step="1"
       />
     </div>
   </div>
@@ -40,12 +40,16 @@ const mass = ref<number>(getController()?.getMass() ?? 100000);
 
 watch(radius, val => {
   const controller = getController();
-  controller?.setRadius(val);
+  if (controller) {
+    radius.value = controller.setRadius(val);
+  }
 });
 
 watch(mass, val => {
   const controller = getController();
-  controller?.setMass(val);
+  if (controller) {
+    mass.value = controller.setMass(val);
+  }
 });
 
 </script>
