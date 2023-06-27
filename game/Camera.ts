@@ -36,12 +36,8 @@ export default class Camera {
       x = _x_position.x;
       y = _x_position.y;
     }
-    const p0 = this.transform.transformPoint({ x: 0, y: 0 });
-    const pos = this.transform
-      .inverse()
-      .translate(p0.x, p0.y)
-      .transformPoint({ x: x, y: y });
-    this.transform.translateSelf(pos.x, pos.y);
+    const p0 = this.transform.inverse().transformPoint({ x: 0, y: 0 });
+    this.transform.translateSelf(p0.x + x, p0.y + y);
   }
 
   public move(dx: number, dy: number): void;
@@ -59,7 +55,7 @@ export default class Camera {
     const p0 = this.transform.transformPoint({ x: 0, y: 0 });
     const pan = this.transform
       .inverse()
-      .translate(p0.x, p0.y)
+      .translateSelf(p0.x, p0.y)
       .transformPoint({ x: dx, y: dy });
     this.transform.translateSelf(pan.x, pan.y);
   }
