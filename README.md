@@ -2,6 +2,8 @@
 
 https://bec3-390100.uc.r.appspot.com/
 
+![Preview](preview.png)
+
 ## Setup
 
 Make sure to install the dependencies:
