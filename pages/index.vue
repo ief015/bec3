@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div oncontextmenu="return false">
     <GameMain ref="game" class="fixed w-screen h-screen z-0" />
     <div v-if="game" class="absolute inset-0 z-10 cursor-default pointer-events-none">
       <div class="absolute top-2 left-2">
