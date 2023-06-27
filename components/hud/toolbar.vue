@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-2">
-    <div class="flex flex-row gap-2 justify-center">
+    <div class="flex flex-row gap-2 justify-center pointer-events-auto">
       <div class="tooltip tooltip-bottom" data-tip="Coming soon">
         <HudToolbarBtn label="Select" name="select" v-model:selection="selection" disabled />
       </div>
