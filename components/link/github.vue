@@ -1,8 +1,8 @@
 <template>
   <div
-    class="cursor-pointer pointer-events-auto transition-colors text-gray-700 hover:text-gray-500"
+    class="cursor-pointer pointer-events-auto tooltip tooltip-right transition-colors text-gray-700 hover:text-gray-500"
     @click="onClick"
-    :title="href"
+    :data-tip="href"
   >
     <svg width="24" height="24" viewBox="0 0 98 96" xmlns="http://www.w3.org/2000/svg">
       <path
