@@ -4,8 +4,12 @@
       <div class="tooltip tooltip-bottom" data-tip="Coming soon">
         <HudToolbarBtn label="Select" name="select" v-model:selection="selection" disabled />
       </div>
-      <HudToolbarBtn label="Create" name="create" v-model:selection="selection" />
-      <HudToolbarBtn label="Look"   name="look"   v-model:selection="selection" />
+      <div class="tooltip tooltip-bottom" data-tip="Click+drag to create bodies">
+        <HudToolbarBtn label="Create" name="create" v-model:selection="selection" />
+      </div>
+      <div class="tooltip tooltip-bottom" data-tip="Click+drag to move camera, wheel to zoom">
+        <HudToolbarBtn label="Look"   name="look"   v-model:selection="selection" />
+      </div>
     </div>
     <div v-if="game">
       <HudControlsCreate
