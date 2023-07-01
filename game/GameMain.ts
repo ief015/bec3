@@ -15,8 +15,8 @@ export default class GameMain {
   private events: GameEventManager = new GameEventManager(this);
   private camera: Camera = new Camera();
   private lastFrameTimestamp: number = performance.now();
-  private pausedTimestamp: number = 0;
   private paused: boolean = false;
+  private pausedBlurred: boolean = false;
   private shutdown: boolean = false;
   private cursor: Point = { x: 0, y: 0 };
   private stats: GameStats = {
@@ -30,8 +30,8 @@ export default class GameMain {
   private handleTouchMoveListener = this.handleTouchMove.bind(this);
   private handleKeyDownListener = this.handleKeyDown.bind(this);
   private handleKeyUpListener = this.handleKeyUp.bind(this);
-  private handleBlurListener = this.pause.bind(this);
-  private handleFocusListener = this.resume.bind(this);
+  private handleBlurListener = this.handleBlur.bind(this);
+  private handleFocusListener = this.handleFocus.bind(this);
   private onFrameCb?: OnFrameCallback;
 
   constructor(canvas: HTMLCanvasElement) {
@@ -80,18 +80,11 @@ export default class GameMain {
   }
 
   public pause(): void {
-    if (this.paused)
-      return;
     this.paused = true;
-    this.pausedTimestamp = performance.now();
   }
 
   public resume(): void {
-    if (!this.paused)
-      return;
     this.paused = false;
-    this.lastFrameTimestamp += performance.now() - this.pausedTimestamp;
-    requestAnimationFrame(this.handleFrame.bind(this));
   }
 
   public isPaused(): boolean {
@@ -243,19 +236,32 @@ export default class GameMain {
     }
   }
 
+  private handleBlur() {
+    this.pausedBlurred = this.paused;
+    this.pause();
+  }
+
+  private handleFocus() {
+    if (!this.pausedBlurred) {
+      this.lastFrameTimestamp = performance.now();
+      this.resume();
+    }
+  }
+
   private handleFrame(startTime: number) {
-    const dt = startTime - this.lastFrameTimestamp;
-    this.stats.updateTimeMs = this.preUpdate(dt / 1000) + this.update(dt / 1000);
+    const dt = this.paused ? 0 : startTime - this.lastFrameTimestamp;
+    const dtSec = dt / 1000;
+    this.stats.updateTimeMs = this.preUpdate(dtSec) + this.update(dtSec);
     if (this.canvas) {
       const ctx = this.canvas.getContext('2d');
       if (ctx) {
-        this.stats.renderTimeMs = this.draw(this.canvas, ctx, dt / 1000);
+        this.stats.renderTimeMs = this.draw(this.canvas, ctx, dtSec);
       }
     }
     this.stats.frameTimeMs = performance.now() - startTime;
     this.stats.fps = 1000 / (startTime - this.lastFrameTimestamp);
     this.lastFrameTimestamp = startTime;
-    if (this.paused || this.shutdown)
+    if (this.shutdown)
       return;
     requestAnimationFrame(this.handleFrame.bind(this));
     this.onFrameCb?.(this);
