@@ -1,24 +1,14 @@
 import GameEventHandler from "~/game/GameEventHandler";
-import Point from "~/game/Point";
-import ShowBodyDetails from "~/game/hud/ShowBodyDetails";
 
 export default class LookToolController extends GameEventHandler {
 
   private moving: boolean = false;
-  private bodyDetailer?: ShowBodyDetails;
 
   public onActivated(): void {
-    console.log("asdasdasd");
-    const game = this.getGame();
-    this.bodyDetailer = new ShowBodyDetails(game);
-    game.getEvents().addHandler(this.bodyDetailer);
   }
 
   public onDeactivated(): void {
-    if (this.bodyDetailer) {
-      const game = this.getGame();
-      game.getEvents().removeHandler(this.bodyDetailer);
-    }
+  
   }
 
   public onPreUpdate(dt: number) {

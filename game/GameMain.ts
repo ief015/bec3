@@ -4,6 +4,7 @@ import Simulation from "~/game/simulation/Simulation";
 import Point from "~/game/Point";
 import Camera from "~/game/Camera";
 import GameEventManager from "~/game/GameEventManager";
+import ShowBodyDetails from "~/game/hud/ShowBodyDetails";
 
 export type OnFrameCallback = (game: GameMain) => void;
 
@@ -12,6 +13,7 @@ export default class GameMain {
   private canvas: HTMLCanvasElement;
   private sim: Simulation = new Simulation();
   private controller?: GameEventHandler;
+  private bodyDetailer: ShowBodyDetails = new ShowBodyDetails(this);
   private events: GameEventManager = new GameEventManager(this);
   private camera: Camera = new Camera();
   private lastFrameTimestamp: number = performance.now();
@@ -37,6 +39,7 @@ export default class GameMain {
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.setCanvas(canvas);
+    this.events.addHandler(this.bodyDetailer);
   }
 
   public getCursor(): Readonly<Point> {
