@@ -2,10 +2,10 @@ const nameM = [ "Achernar", "Acrux", "Aerglo", "Alioth", "Alnair", "Alpherg", "A
 const nameF = [ "Aerglo", "Alcyone", "Algedi", "Alhena", "Alioth", "Alnair", "Alphecca", "Alula", "Alya", "Amalthea", "Andromeda", "Ankaa", "Antlia", "Antliae", "Aquila", "Ara", "Arae", "Ariel", "Aries", "Arpina", "Aster", "Astris", "Atria", "Aura", "Auriga", "Aurora", "Auva", "Belinda", "Bellatrix", "Bianca", "Caeli", "Callisto", "Calypso", "Capella", "Carina", "Carinae", "Cassini", "Cassio", "Cassiopeia", "Celeste", "Cephei", "Ceres", "Ceti", "Chandra", "Chara", "Charon", "Circini", "Cordelia", "Corvi", "Cressida", "Crucis", "Cygni", "Cyllene", "Dawn", "Delphini", "Dione", "Diphda", "Elara", "Elera", "Equulei", "Eridani", "Eris", "Estella", "Esther", "Europa", "Fay", "Fermi", "Gaia", "Galatea", "Galexia", "Gemini", "Gemma", "Gienah", "Halley", "Halo", "Helene", "Helia", "Hydri", "Indi", "Io", "Isonoe", "Janus", "Juliet", "Kalindi", "Kore", "Lacerta", "Larissa", "Leda", "Leporis", "Libra", "Luna", "Lupi", "Lyncis", "Lyra", "Lyrae", "Maia", "Mercury", "Meridian", "Miranda", "Moira", "Neso", "Nix", "Norma", "Normae", "Nova", "Ophelia", "Orionis", "Pandora", "Pavo", "Pegasi", "Persei", "Phoebe", "Phoenix", "Pisces", "Portia", "Pyxis", "Rhea", "Rossi", "Sagitta", "Saros", "Scorpii", "Scuti", "Seren", "Tauri", "Thebe", "Titania", "Urania", "Vega", "Vela", "Venus", "Virgo", "Volans", "Zeke" ];
 const greekAlphabet = "ΑαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσςΤτΥυΦφΧχΨψΩω";
 
-const randomNameM = () => nameM[Math.floor(Math.random() * nameM.length)];
-const randomNameF = () => nameF[Math.floor(Math.random() * nameF.length)];
-const randomGreekLetter = () => greekAlphabet[Math.floor(Math.random() * greekAlphabet.length)];
-const randomNameMashed = () => {
+const randomNameM = (): string => nameM[Math.floor(Math.random() * nameM.length)];
+const randomNameF = (): string => nameF[Math.floor(Math.random() * nameF.length)];
+const randomGreekLetter = (): string => greekAlphabet[Math.floor(Math.random() * greekAlphabet.length)];
+const randomNameMashed = (): string => {
   const left = Math.random() < 0.5 ? randomNameF() : randomNameM();
   const right = Math.random() < 0.5 ? randomNameF() : randomNameM();
   const mash =
@@ -14,7 +14,7 @@ const randomNameMashed = () => {
   return mash.charAt(0).toUpperCase() + mash.slice(1).toLowerCase();
 };
 
-export default function generateName() {
+export default function generateName(): string {
   const nparts = Math.floor(Math.random() * 2) + 1;
   const parts = [];
   for (let i = 0; i < nparts; i++) {
