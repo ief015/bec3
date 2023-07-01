@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import GameMain from '~/game/GameMain';
-import CreateToolController from '~/game/tools/CreateToolController';
+import CreateToolController from '~/game/controllers/CreateToolController';
 
 const props = defineProps<{
   game: GameMain;

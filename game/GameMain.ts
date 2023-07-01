@@ -3,6 +3,7 @@ import GameStats from "~/game/GameStats";
 import Simulation from "~/game/simulation/Simulation";
 import Point from "~/game/Point";
 import Camera from "~/game/Camera";
+import GameEventManager from "~/game/GameEventManager";
 
 export type OnFrameCallback = (game: GameMain) => void;
 
@@ -11,6 +12,7 @@ export default class GameMain {
   private canvas: HTMLCanvasElement;
   private sim: Simulation = new Simulation();
   private controller?: GameEventHandler;
+  private events: GameEventManager = new GameEventManager(this);
   private camera: Camera = new Camera();
   private lastFrameTimestamp: number = performance.now();
   private pausedTimestamp: number = 0;
@@ -42,7 +44,7 @@ export default class GameMain {
   }
 
   public getCursorCamera(): Readonly<Point> {
-    return this.camera.toCameraSpace(this.cursor);
+    return this.camera.toWorldSpace(this.cursor);
   }
 
   public getStats(): Readonly<GameStats> {
@@ -60,13 +62,21 @@ export default class GameMain {
   public setController<TGameController extends GameEventHandler>(
     controllerType?: { new(...args: any[]): TGameController }
   ): TGameController|undefined {
-    return this.controller = controllerType !== undefined ?
+    const controller = controllerType !== undefined ?
       new controllerType(this) :
       undefined;
+    this.controller?.onDeactivated();
+    this.controller = controller;
+    this.controller?.onActivated();
+    return controller;
   }
 
   public getCamera(): Camera {
     return this.camera;
+  }
+
+  public getEvents(): GameEventManager {
+    return this.events;
   }
 
   public pause(): void {
@@ -126,6 +136,7 @@ export default class GameMain {
     //this.sim.clearBodiesOutsideRect(0, 0, window.innerWidth, window.innerHeight);
     //this.camera.rotateRad(dt);
     this.controller?.onPreUpdate(dt);
+    this.events.onPreUpdate(dt);
     return performance.now() - t;
   }
 
@@ -133,6 +144,7 @@ export default class GameMain {
     const t = performance.now();
     this.sim.step(dt);
     this.controller?.onPostUpdate(dt);
+    this.events.onPostUpdate(dt);
     return performance.now() - t;
   }
 
@@ -146,8 +158,10 @@ export default class GameMain {
     this.darkenFill(ctx);
     this.camera.apply(ctx);
     this.controller?.onPreDraw(ctx, dt);
+    this.events.onPreDraw(ctx, dt);
     this.sim.render(ctx, dt);
     this.controller?.onPostDraw(ctx, dt);
+    this.events.onPostDraw(ctx, dt);
     ctx.restore();
     return performance.now() - t;
   }
@@ -168,6 +182,7 @@ export default class GameMain {
     this.cursor.x = x;
     this.cursor.y = y;
     this.controller?.onCursorMove(x, y, dx, dy);
+    this.events.onCursorMove(x, y, dx, dy);
   }
 
   private handleTouchMove(e: TouchEvent) {
@@ -177,37 +192,45 @@ export default class GameMain {
     this.cursor.x = x;
     this.cursor.y = y;
     this.controller?.onCursorMove(x, y, x - lx, y - ly);
+    this.events.onCursorMove(x, y, x - lx, y - ly);
   }
 
   public handleMouseDown(e: MouseEvent) {
     this.controller?.onPressDown(e.x, e.y, e.button);
+    this.events.onPressDown(e.x, e.y, e.button);
   }
 
   public handleMouseUp(e: MouseEvent) {
     this.controller?.onPressUp(e.x, e.y, e.button);
+    this.events.onPressUp(e.x, e.y, e.button);
   }
 
   public handleTouchDown(e: TouchEvent) {
     const { clientX: x, clientY: y } = e.touches[0];
     this.controller?.onPressDown(x, y, 0);
+    this.events.onPressDown(x, y, 0);
   }
 
   public handleTouchUp(e: TouchEvent) {
     const { clientX: x, clientY: y } = e.touches[0];
     this.controller?.onPressUp(x, y, 0);
+    this.events.onPressUp(x, y, 0);
   }
 
   private handleKeyDown(e: KeyboardEvent) {
     this.controller?.onKeyDown(e.key);
+    this.events.onKeyDown(e.key);
   }
 
   private handleKeyUp(e: KeyboardEvent) {
     this.controller?.onKeyUp(e.key);
+    this.events.onKeyUp(e.key);
   }
 
   public handleWheel(e: WheelEvent) {
     const { deltaX, deltaY, deltaZ } = e;
     this.controller?.onWheel(deltaX, deltaY, deltaZ);
+    this.events.onWheel(deltaX, deltaY, deltaZ);
   }
 
   private handleResize() {
@@ -216,6 +239,7 @@ export default class GameMain {
       this.canvas.width = width;
       this.canvas.height = height;
       this.controller?.onResize(width, height);
+      this.events.onResize(width, height);
     }
   }
 

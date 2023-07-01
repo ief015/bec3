@@ -28,6 +28,20 @@ export default class GameEventHandler {
   }
 
   /**
+   * Handler has been activated.
+   */
+  public onActivated() {
+
+  }
+
+  /**
+   * Handler has been deactivated.
+   */
+  public onDeactivated() {
+
+  }
+
+  /**
    * Canvas has resized.
    */
   public onResize(width: number, height: number) {

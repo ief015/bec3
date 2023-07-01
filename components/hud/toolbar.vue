@@ -22,8 +22,8 @@
 
 <script setup lang="ts">
 import GameMain from '~/game/GameMain';
-import CreateToolController from '~/game/tools/CreateToolController';
-import LookToolController from '~/game/tools/LookToolController';
+import CreateToolController from '~/game/controllers/CreateToolController';
+import LookToolController from '~/game/controllers/LookToolController';
 
 const props = defineProps<{
   game?: GameMain;

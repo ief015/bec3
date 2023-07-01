@@ -102,8 +102,13 @@ export default class Camera {
     return this.transform;
   }
 
-  public toCameraSpace(point: Point): Point {
+  public toWorldSpace(point: Point): Point {
     const t = this.transform.inverse().transformPoint(point);
+    return { x: t.x, y: t.y };
+  }
+
+  public toScreenSpace(point: Point): Point {
+    const t = this.transform.transformPoint(point);
     return { x: t.x, y: t.y };
   }
 
