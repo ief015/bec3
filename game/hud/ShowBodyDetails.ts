@@ -24,16 +24,21 @@ export default class ShowBodyDetails extends GameEventHandler {
     if (this.body) {
       ctx.save();
       ctx.resetTransform();
-      const cam = this.getCamera();
-      //const pos = cam.toScreenSpace(this.body);
+      ctx.translate(-32, 0);
       const pos = this.getCursor();
       ctx.fillStyle = '#777';
       ctx.font = '14px sans-serif';
       ctx.shadowColor = 'black';
       ctx.shadowBlur = 1;
-      ctx.translate(-32, -32);
+      // draw from bottom, upwards
+      ctx.translate(0, -15);
+      ctx.fillText(`R ${this.body.radius.toFixed(3)}`, pos.x, pos.y);
+      ctx.translate(0, -15);
       ctx.fillText(`M ${this.body.mass.toFixed(3)}`, pos.x, pos.y);
-      ctx.fillText(`R ${this.body.radius.toFixed(3)}`, pos.x, pos.y + 15);
+      if (this.body.name) {
+        ctx.translate(0, -15);
+        ctx.fillText(this.body.name, pos.x, pos.y);
+      }
       ctx.restore();
     }
   }

@@ -1,5 +1,8 @@
+import generateName from "~/game/simulation/utils/generateName";
+
 export default class Body {
 
+  public name: string = generateName();
   public x: number = 0;
   public y: number = 0;
   public lx: number = 0;
@@ -24,10 +27,13 @@ export default class Body {
       this.radius = x.radius;
       this.mass = x.mass;
       this.strokeColor = x.strokeColor;
+      this.name = x.name;
     }
     else if (typeof x == 'number') {
       this.x = x;
       this.y = y!;
+      this.lx = x;
+      this.ly = y!;
       vx && (this.vx = vx);
       vy && (this.vy = vy);
       radius && (this.radius = radius);
