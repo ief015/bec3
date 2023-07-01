@@ -77,6 +77,8 @@ export default class Simulation {
   }
 
   public step(dt: number): void {
+    if (dt == 0)
+      return;
     const dtScaled = dt * this.timeScale;
     for (let i = 0; i < this.bodies.length; i++) {
       const a = this.bodies[i];
