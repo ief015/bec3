@@ -24,6 +24,10 @@
         class="absolute bottom-2 right-2 pointer-events-auto"
         :game="game.game"
       />
+      <HudPauseBtn
+        class="absolute top-2 right-2 pointer-events-auto"
+        :game="game.game"
+      />
     </div>
   </div>
 </template>
