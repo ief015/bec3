@@ -26,11 +26,13 @@ export default class ShowBodyDetails extends GameEventHandler {
       ctx.resetTransform();
       ctx.translate(-32, 0);
       const pos = this.getCursor();
-      ctx.fillStyle = '#777';
+      ctx.fillStyle = '#999';
       ctx.font = '14px sans-serif';
-      ctx.shadowColor = 'black';
-      ctx.shadowBlur = 1;
-      // draw from bottom, upwards
+      ctx.shadowColor = '#000';
+      ctx.shadowBlur = 1.5;
+      ctx.shadowOffsetX = 0.5;
+      ctx.shadowOffsetY = 0.5;
+      // Draw from bottom, upwards
       ctx.translate(0, -15);
       ctx.fillText(`R ${this.body.radius.toFixed(3)}`, pos.x, pos.y);
       ctx.translate(0, -15);
