@@ -1,6 +1,6 @@
 <template>
   <button
-    class="btn btn-ghost"
+    class="btn btn-ghost w-[6em]"
     :class="{
       'btn-outline': toggle
     }"
