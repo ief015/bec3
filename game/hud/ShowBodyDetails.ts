@@ -26,8 +26,8 @@ export default class ShowBodyDetails extends GameEventHandler {
       ctx.resetTransform();
       ctx.translate(-32, 0);
       const pos = this.getCursor();
-      ctx.fillStyle = '#999';
-      ctx.font = '14px sans-serif';
+      ctx.fillStyle = '#A6ADBA';
+      ctx.font = '12px sans-serif';
       ctx.shadowColor = '#000';
       ctx.shadowBlur = 1.5;
       ctx.shadowOffsetX = 0.5;
