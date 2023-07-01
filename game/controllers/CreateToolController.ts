@@ -2,6 +2,7 @@ import GameEventHandler from "~/game/GameEventHandler";
 import GameMain from "~/game/GameMain";
 import Point from "~/game/Point";
 import Body from "~/game/simulation/Body";
+import generateName from "~/game/simulation/utils/generateName";
 import randomBodyColor from "~/game/simulation/utils/randomColor";
 
 export default class CreateToolController extends GameEventHandler {
@@ -56,6 +57,19 @@ export default class CreateToolController extends GameEventHandler {
     this.force = force;
     sessionStorage.setItem('CreateToolController.force', String(this.force));
     return this.force;
+  }
+
+  public spawnBody(x: number, y: number, launchX: number, launchY: number) {
+    const { x: tx, y: ty } = this.getCamera().toWorldSpace({ x: launchX, y: launchY });
+    const { x: originX, y: originY } = this.getCamera().toWorldSpace({ x, y });
+    const sim = this.getSimulation();
+    const body = new Body(originX, originY);
+    body.radius = this.radius;
+    body.mass = this.mass;
+    body.vx = (originX - tx) * this.force;
+    body.vy = (originY - ty) * this.force;
+    body.strokeColor = randomBodyColor();
+    sim.pushBodies(body);
   }
 
   public onPreUpdate(dt: number) {
@@ -126,16 +140,7 @@ export default class CreateToolController extends GameEventHandler {
   public onPressUp(x: number, y: number, button: number) {
     if (button == 0) {
       if (this.pressOrigin) {
-        const { x: tx, y: ty } = this.getCamera().toWorldSpace({ x, y });
-        const { x: originX, y: originY } = this.getCamera().toWorldSpace(this.pressOrigin);
-        const sim = this.getSimulation();
-        const body = new Body(originX, originY);
-        body.radius = this.radius;
-        body.mass = this.mass;
-        body.vx = (originX - tx) * this.force;
-        body.vy = (originY - ty) * this.force;
-        body.strokeColor = randomBodyColor();
-        sim.pushBodies(body);
+        this.spawnBody(this.pressOrigin.x, this.pressOrigin.y, x, y);
       }
       this.pressOrigin = null;
     }
