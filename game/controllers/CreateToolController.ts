@@ -3,7 +3,6 @@ import GameMain from "~/game/GameMain";
 import Point from "~/game/Point";
 import LookToolController from "~/game/controllers/LookToolController";
 import Body from "~/game/simulation/Body";
-import generateName from "~/game/simulation/utils/generateName";
 import randomBodyColor from "~/game/simulation/utils/randomColor";
 
 export default class CreateToolController extends GameEventHandler {
@@ -92,7 +91,8 @@ export default class CreateToolController extends GameEventHandler {
   private drawCreateHint(ctx: CanvasRenderingContext2D, style: string = '#555') {
     const sim = this.getSimulation();
     const cam = this.getCamera();
-    const { x: cursorX, y: cursorY } = this.getGame().getCursorCamera();
+    const game = this.getGame();
+    const { x: cursorX, y: cursorY } = game.getCursorCamera();
     ctx.save();
     ctx.strokeStyle = style;
     ctx.lineCap = 'round';
