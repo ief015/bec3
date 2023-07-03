@@ -19,9 +19,9 @@ export default function generateName(): string {
   const parts = [];
   for (let i = 0; i < nparts; i++) {
     const r = Math.random();
-    if (r < 0.05)
+    if (r < 0.01)
       parts.push(randomNameF());
-    else if (r < 0.1)
+    else if (r < 0.02)
       parts.push(randomNameM());
     else
       parts.push(randomNameMashed());
