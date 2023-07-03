@@ -49,7 +49,7 @@ export default class SelectToolController extends GameEventHandler {
     ctx.strokeStyle = style;
     ctx.lineCap = 'butt';
     for (const body of this.selected) {
-      const radius = Math.max(body.radius * 1.25, 10 / cam.getZoom());
+      const radius = Math.max(body.radius * 1.5, 10 / cam.getZoom());
       ctx.beginPath();
       ctx.lineWidth = 1 / cam.getZoom();
       ctx.arc(body.x, body.y, radius, 0, 2 * Math.PI)
