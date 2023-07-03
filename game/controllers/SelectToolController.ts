@@ -4,11 +4,18 @@ import Point from "~/game/Point";
 import LookToolController from "~/game/controllers/LookToolController";
 import Body from "~/game/simulation/Body";
 
+export interface Rect {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
 export default class SelectToolController extends GameEventHandler {
 
   private look: LookToolController;
   private selected: Body[] = [];
-  private isSelecting: boolean = false;
+  private selecting: boolean = false;
   private selectBoxOrigin: Point = { x: 0, y: 0 };
   private selectBoxEnd: Point = { x: 0, y: 0 };
 
@@ -52,24 +59,43 @@ export default class SelectToolController extends GameEventHandler {
 
   private checkSelection() {
     const sim = this.getSimulation();
-    const { x, y } = this.selectBoxOrigin;
-    const w = this.selectBoxEnd.x - x;
-    const h = this.selectBoxEnd.y - y;
+    const { x, y, w, h } = this.getSelectionBox();
     const selected = sim.getBodies().filter(b => {
       const { x: bx, y: by, radius } = b;
-      let left = bx - radius;
-      let right = bx + radius;
-      let top = by - radius;
-      let bottom = by + radius;
-      if (left > right) {
-        [left, right] = [right, left];
-      }
-      if (top > bottom) {
-        [top, bottom] = [bottom, top];
-      }
+      const left = bx - radius;
+      const right = bx + radius;
+      const top = by - radius;
+      const bottom = by + radius;
       return !(left > x + w || right < x || top > y + h || bottom < y);
     });
     this.selected.splice(0, this.selected.length, ...selected);
+  }
+
+  public getSelected(): Readonly<Body[]> {
+    return this.selected;
+  }
+
+  public getSelectionBox(): Rect {
+    let { x, y } = this.selectBoxOrigin;
+    let w = this.selectBoxEnd.x - x;
+    let h = this.selectBoxEnd.y - y;
+    if (w < 0) {
+      x += w;
+      w = -w;
+    }
+    if (h < 0) {
+      y += h;
+      h = -h;
+    }
+    return { x, y, w, h };
+  };
+
+  public isSelecting(): boolean {
+    return this.selecting;
+  }
+
+  public hasSelection(): boolean {
+    return this.selected.length > 0;
   }
 
   public onPreUpdate(dt: number) {
@@ -86,7 +112,7 @@ export default class SelectToolController extends GameEventHandler {
 
   public onPostDraw(ctx: CanvasRenderingContext2D, dt: number) {
     ctx.save();
-    if (this.isSelecting) {
+    if (this.selecting) {
       this.drawSelectionBox(ctx);
     }
     this.drawSelected(ctx);
@@ -95,30 +121,29 @@ export default class SelectToolController extends GameEventHandler {
 
   public onPressDown(x: number, y: number, button: number) {
     if (button == 0) {
-      this.isSelecting = true;
+      this.selecting = true;
       const cam = this.getCamera();
       const start = cam.toWorldSpace({ x, y });
       this.selectBoxOrigin = start;
       this.selectBoxEnd = start;
-      this.checkSelection();
     }
   };
 
   public onPressUp(x: number, y: number, button: number) {
     if (button == 0) {
-      if (this.isSelecting) {
+      if (this.selecting) {
         const cam = this.getCamera();
         this.selectBoxEnd = cam.toWorldSpace({ x, y });
-        this.isSelecting = false;
+        this.selecting = false;
+        this.checkSelection();
       }
     }
   };
 
   public onCursorMove(x: number, y: number, dx: number, dy: number): void {
-    if (this.isSelecting) {
+    if (this.selecting) {
       const cam = this.getCamera();
       this.selectBoxEnd = cam.toWorldSpace({ x, y });
-      this.checkSelection();
     }
   }
 
