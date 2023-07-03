@@ -2,6 +2,7 @@ import GameEventHandler from "~/game/GameEventHandler";
 
 export default class LookToolController extends GameEventHandler {
 
+  private moveButton: number = 0;
   private moving: boolean = false;
 
   public onActivated(): void {
@@ -28,13 +29,13 @@ export default class LookToolController extends GameEventHandler {
   }
 
   public onPressDown(x: number, y: number, button: number) {
-    if (button == 0) {
+    if (button == this.moveButton) {
       this.moving = true;
     }
   };
 
   public onPressUp(x: number, y: number, button: number) {
-    if (button == 0) {
+    if (button == this.moveButton) {
       this.moving = false;
     }
   };
