@@ -10,7 +10,7 @@ export default class ShowBodyDetails extends GameEventHandler {
     const bodies = this.getSimulation().getBodies();
     const cam = this.getCamera();
     const cursor = this.getCursor();
-    this.body = bodies.find(b => {
+    this.body = bodies.findLast(b => {
       const probe = cam.toWorldSpace(cursor);
       const bodyPos: Point = { x: b.x, y: b.y };
       const dx = probe.x - bodyPos.x;
