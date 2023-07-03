@@ -2,8 +2,7 @@
   <button
     class="btn"
     :class="{
-      'btn-outline': isSelected,
-      'btn-ghost': !isSelected,
+      [isSelected ? 'btn-outline' : 'btn-ghost']: true,
     }"
     :disabled="disabled"
     @click="onClick"
