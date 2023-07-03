@@ -5,7 +5,16 @@ export default class LookToolController extends GameEventHandler {
   private moveButton: number = 0;
   private moving: boolean = false;
 
+  public getMoveButton(): number {
+    return this.moveButton;
+  }
+
+  public setMoveButton(button: number): number {
+    return this.moveButton = button;
+  }
+
   public onActivated(): void {
+
   }
 
   public onDeactivated(): void {

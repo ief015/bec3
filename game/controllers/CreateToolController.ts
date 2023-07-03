@@ -1,12 +1,14 @@
 import GameEventHandler from "~/game/GameEventHandler";
 import GameMain from "~/game/GameMain";
 import Point from "~/game/Point";
+import LookToolController from "~/game/controllers/LookToolController";
 import Body from "~/game/simulation/Body";
 import generateName from "~/game/simulation/utils/generateName";
 import randomBodyColor from "~/game/simulation/utils/randomColor";
 
 export default class CreateToolController extends GameEventHandler {
 
+  private look: LookToolController;
   private pressOrigin: Point|null = null;
 
   private radius: number = 5;
@@ -27,6 +29,13 @@ export default class CreateToolController extends GameEventHandler {
     if (force) {
       this.force = Number(force);
     }
+    this.look = new LookToolController(game);
+    this.look.setMoveButton(2);
+    game.getEvents().addHandler(this.look);
+  }
+
+  public onDeactivated(): void {
+    this.getGame().getEvents().removeHandler(this.look);
   }
 
   public getRadius(): number {
@@ -60,8 +69,8 @@ export default class CreateToolController extends GameEventHandler {
   }
 
   public spawnBody(x: number, y: number, launchX: number, launchY: number) {
-    const { x: tx, y: ty } = this.getCamera().toWorldSpace({ x: launchX, y: launchY });
-    const { x: originX, y: originY } = this.getCamera().toWorldSpace({ x, y });
+    const { x: tx, y: ty } = { x: launchX, y: launchY };
+    const { x: originX, y: originY } = { x, y };
     const sim = this.getSimulation();
     const body = new Body(originX, originY);
     body.radius = this.radius;
@@ -88,7 +97,7 @@ export default class CreateToolController extends GameEventHandler {
     ctx.strokeStyle = style;
     ctx.lineCap = 'round';
     if (this.pressOrigin) {
-      const { x: originX, y: originY } = this.getCamera().toWorldSpace(this.pressOrigin);
+      const { x: originX, y: originY } = this.pressOrigin;
       // Body origin
       ctx.beginPath();
       ctx.lineWidth = 0.5 / cam.getZoom();
@@ -133,14 +142,16 @@ export default class CreateToolController extends GameEventHandler {
 
   public onPressDown(x: number, y: number, button: number) {
     if (button == 0) {
-      this.pressOrigin = { x, y };
+      this.pressOrigin = this.getCamera().toWorldSpace({ x, y });
     }
   };
 
   public onPressUp(x: number, y: number, button: number) {
     if (button == 0) {
       if (this.pressOrigin) {
-        this.spawnBody(this.pressOrigin.x, this.pressOrigin.y, x, y);
+        const cam = this.getCamera();
+        const { x: launchX, y: launchY } = cam.toWorldSpace({ x, y });
+        this.spawnBody(this.pressOrigin.x, this.pressOrigin.y, launchX, launchY);
       }
       this.pressOrigin = null;
     }
