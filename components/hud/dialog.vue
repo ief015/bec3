@@ -1,13 +1,13 @@
 <template>
-  <dialog ref="dialog" class="modal">
-    <form method="dialog" class="modal-box opacity-90">
+  <dialog ref="dialog" class="modal" @click="!persistent && hide()">
+    <form method="dialog" class="modal-box opacity-90" @click.stop>
       <button
         v-if="!hideClose" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
         @click="hide"
       >
         ✕
       </button>
-      <h3 v-if="title != null" class="font-bold text-lg">{{ title }}</h3>
+      <h3 v-if="title != null" class="font-bold text-lg mb-6">{{ title }}</h3>
       <slot></slot>
       <div v-if="$slots['actions']" class="modal-action">
         <slot name="actions"></slot>
@@ -22,6 +22,7 @@ const props = defineProps<{
   title?: string;
   hideClose?: boolean;
   autoOpen?: boolean;
+  persistent?: boolean;
 }>();
 const opened = defineModel<boolean>({ local: true, default: false });
 
