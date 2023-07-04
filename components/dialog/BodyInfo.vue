@@ -1,10 +1,8 @@
 <template>
   <HudDialog :title="title">
-    <div class="m-2">
-      <div v-for="(body, idx) in sortedBodies">
-        <div class="divider my-1" v-if="idx > 0"></div>
-        <ViewBodyListItem :body="body" />
-      </div>
+    <div v-for="(body, idx) in sortedBodies">
+      <div class="divider my-1" v-if="idx > 0"></div>
+      <ViewBodyListItem :body="body" />
     </div>
   </HudDialog>
 </template>
