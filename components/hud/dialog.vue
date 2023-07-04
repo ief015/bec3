@@ -9,6 +9,9 @@
       </button>
       <h3 v-if="title != null" class="font-bold text-lg">{{ title }}</h3>
       <slot></slot>
+      <div v-if="$slots['actions']" class="modal-action">
+        <slot name="actions"></slot>
+      </div>
     </form>
   </dialog>
 </template>
