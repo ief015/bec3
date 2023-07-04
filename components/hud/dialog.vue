@@ -3,7 +3,6 @@
     <form method="dialog" class="modal-box">
       <button
         v-if="!hideClose" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-        type="button"
         @click="hide"
       >
         ✕
@@ -47,7 +46,6 @@ if (props.autoOpen) {
 }
 
 watch(opened, open => {
-  console.log('open', open);
   if (open) {
     dialog.value?.showModal();
   } else {
