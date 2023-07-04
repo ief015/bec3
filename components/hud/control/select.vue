@@ -6,29 +6,22 @@
         class="tooltip tooltip-bottom pointer-events-auto"
         data-tip="Click+drag to select bodies"
       >
-        <button
-          class="btn btn-ghost btn-sm"
-          :class="{
-            [getMode() === 'select' ? 'btn-outline' : 'btn-ghost']: true,
-          }"
+        <HudToggleBtn class="btn-sm"
+          :active="getMode() === 'select'"
         >
           Select
-        </button>
+        </HudToggleBtn>
       </div>
 
       <div
         class="tooltip tooltip-bottom pointer-events-auto"
         data-tip="Coming soon"
       >
-        <button
-          class="btn btn-ghost btn-sm"
-          :class="{
-            [getMode() === 'move' ? 'btn-outline' : 'btn-ghost']: true,
-          }"
-          disabled
+        <HudToggleBtn disabled class="btn-sm"
+          :active="getMode() === 'move'"
         >
           Move
-        </button>
+        </HudToggleBtn>
       </div>
 
       <div class="divider divider-horizontal"></div>
@@ -80,6 +73,7 @@
       v-model="showInfoDialog"
       :bodies="selected"
     />
+
   </div>
 </template>
 

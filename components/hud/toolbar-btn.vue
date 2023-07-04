@@ -1,14 +1,11 @@
 <template>
-  <button
-    class="btn"
-    :class="{
-      [isSelected ? 'btn-outline' : 'btn-ghost']: true,
-    }"
+  <HudToggleBtn
+    :active="isSelected"
     :disabled="disabled"
     @click="onClick"
   >
     {{ label }}
-  </button>
+  </HudToggleBtn>
 </template>
 
 <script setup lang="ts">
@@ -20,7 +17,7 @@ const props = defineProps<{
 }>();
 
 const selection = defineModel<string>('selection', { required: true });
-const isSelected = computed(() => selection.value && (selection.value === props.name));
+const isSelected = computed(() => !!selection.value && (selection.value === props.name));
 
 const onClick = () => {
   if (props.name) {

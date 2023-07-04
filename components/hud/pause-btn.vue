@@ -1,13 +1,11 @@
 <template>
-  <button
-    class="btn btn-ghost w-[6em]"
-    :class="{
-      'btn-outline': toggle
-    }"
+  <HudToggleBtn
+    :active="toggle"
+    class="w-[6em]"
     @click="onClick"
   >
     {{ label }}
-  </button>
+  </HudToggleBtn>
 </template>
 
 <script setup lang="ts">
@@ -18,7 +16,6 @@ const props = defineProps<{
 }>();
 
 const toggle = ref(false);
-
 const label = computed(() => toggle.value ? 'Resume' : 'Pause');
 
 const onClick = () => {
