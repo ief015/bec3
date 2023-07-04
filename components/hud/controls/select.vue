@@ -1,55 +1,60 @@
 <template>
-  <div class="flex flex-row gap-1 justify-center">
-    <div
-      class="tooltip tooltip-bottom pointer-events-auto"
-      data-tip="Click+drag to select bodies"
-    >
-      <button
-        class="btn btn-ghost btn-sm"
-        :class="{
-          [getMode() === 'select' ? 'btn-outline' : 'btn-ghost']: true,
-        }"
+  <div>
+    <div class="flex flex-row gap-1 justify-center">
+      <div
+        class="tooltip tooltip-bottom pointer-events-auto"
+        data-tip="Click+drag to select bodies"
       >
-        Select
-      </button>
+        <button
+          class="btn btn-ghost btn-sm"
+          :class="{
+            [getMode() === 'select' ? 'btn-outline' : 'btn-ghost']: true,
+          }"
+        >
+          Select
+        </button>
+      </div>
+      <div
+        class="tooltip tooltip-bottom pointer-events-auto"
+        data-tip="Coming soon"
+      >
+        <button
+          class="btn btn-ghost btn-sm"
+          :class="{
+            [getMode() === 'move' ? 'btn-outline' : 'btn-ghost']: true,
+          }"
+          disabled
+        >
+          Move
+        </button>
+      </div>
+      <div class="border-l border-[#555]"></div>
+      <div
+        class="tooltip tooltip-bottom pointer-events-auto"
+        data-tip="Coming soon"
+      >
+        <button
+          class="btn btn-ghost btn-sm"
+          disabled
+        >
+          Edit
+        </button>
+      </div>
+      <div
+        class="tooltip tooltip-bottom pointer-events-auto"
+        data-tip="Delete selected bodies"
+      >
+        <button
+          class="btn btn-ghost btn-sm"
+          :disabled="!hasSelection"
+          @click="onClickDelete"
+        >
+          Delete
+        </button>
+      </div>
     </div>
-    <div
-      class="tooltip tooltip-bottom pointer-events-auto"
-      data-tip="Coming soon"
-    >
-      <button
-        class="btn btn-ghost btn-sm"
-        :class="{
-          [getMode() === 'move' ? 'btn-outline' : 'btn-ghost']: true,
-        }"
-        disabled
-      >
-        Move
-      </button>
-    </div>
-    <div class="border-l border-[#555]"></div>
-    <div
-      class="tooltip tooltip-bottom pointer-events-auto"
-      data-tip="Coming soon"
-    >
-      <button
-        class="btn btn-ghost btn-sm"
-        disabled
-      >
-        Edit
-      </button>
-    </div>
-    <div
-      class="tooltip tooltip-bottom pointer-events-auto"
-      data-tip="Delete selected bodies"
-    >
-      <button
-        class="btn btn-ghost btn-sm"
-        :disabled="!hasSelection"
-        @click="onClickDelete"
-      >
-        Delete
-      </button>
+    <div v-if="hasSelection" class="text-center mt-2 label-text">
+      {{ selectedCount }} selected
     </div>
   </div>
 </template>
@@ -68,6 +73,7 @@ watch(() => props.game, () => {
 }, { immediate: true });
 
 const hasSelection = computed(() => controller.value?.hasSelection() ?? false);
+const selectedCount = computed(() => controller.value?.getSelected()?.length ?? 0);
 
 const getMode = () => {
   return 'select';
