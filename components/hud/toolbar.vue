@@ -12,11 +12,11 @@
       </div>
     </div>
     <div v-if="game">
-      <HudControlsCreate
+      <HudControlCreate
         v-if="selection === 'create'"
         :game="game"
       />
-      <HudControlsSelect
+      <HudControlSelect
         v-if="selection === 'select'"
         :game="game"
       />
