@@ -1,4 +1,3 @@
-import GameMain from "~/game/GameMain";
 import Point from "~/game/Point";
 import Body from "~/game/simulation/Body";
 
