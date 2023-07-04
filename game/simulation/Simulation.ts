@@ -16,6 +16,15 @@ export default class Simulation {
     this.bodies.push(...bodies);
   }
 
+  public removeBodies(...bodies: Body[]): void {
+    for (const body of bodies) {
+      const index = this.bodies.indexOf(body);
+      if (index >= 0) {
+        this.bodies.splice(index, 1);
+      }
+    }
+  }
+
   public clearBodies(): void {
     this.bodies.splice(0, this.bodies.length);
   }

@@ -98,6 +98,12 @@ export default class SelectToolController extends GameEventHandler {
     return this.selected.length > 0;
   }
 
+  public deleteSelection() {
+    const sim = this.getSimulation();
+    sim.removeBodies(...this.selected);
+    this.selected.splice(0, this.selected.length);
+  }
+
   public onPreUpdate(dt: number) {
 
   }
