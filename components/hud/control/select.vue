@@ -88,16 +88,9 @@ const props = defineProps<{
 
 const showInfoDialog = ref<boolean>(false);
 const controller = ref<SelectToolController>();
-watch(() => props.game, () => {
-  controller.value = props.game.getController<SelectToolController>();
-}, { immediate: true });
-
 const hasSelection = computed<boolean>(() => controller.value?.hasSelection() ?? false);
 const selectedCount = computed<number>(() => controller.value?.getSelected()?.length ?? 0);
-const selected = computed<readonly Body[]>(() => {
-  const bodies = controller.value?.getSelected();
-  return bodies ?? [];
-});
+const selected = computed<Body[]>(() => controller.value?.getSelected() ?? []);
 
 const getMode = () => {
   return 'select';
@@ -110,5 +103,9 @@ const onClickDelete = () => {
 const onClickShowInfo = () => {
   showInfoDialog.value = true;
 }
+
+watch(() => props.game, () => {
+  controller.value = props.game.getController<SelectToolController>();
+}, { immediate: true });
 
 </script>
