@@ -60,4 +60,25 @@ export default class Body {
     this.y += this.vy * dt;
   }
 
+  /**
+   * Get the speed of the body.
+   */
+  public getSpeed(): number {
+    return Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+  }
+
+  /**
+   * Get the direction of the body in radians.
+   */
+  public getDirection(): number {
+    return Math.atan2(this.vy, this.vx);
+  }
+
+  /**
+   * Get the direction of the body in degrees.
+   */
+  public getDirectionDegrees(): number {
+    return this.getDirection() * 180 / Math.PI;
+  }
+
 }
