@@ -15,8 +15,11 @@ const props = defineProps<{
 }>();
 
 const onClick = () => {
-  const sim = props.game?.getSimulation();
-  sim?.clearBodies();
+  const game = props.game;
+  if (!game)
+    return;
+  const sim = game.getSimulation();
+  sim.clearBodies();
 }
 
 </script>
