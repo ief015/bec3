@@ -17,6 +17,12 @@
     "nuxt": "^3.5.2"
   },
   "dependencies": {
-    "daisyui": "^3.0.3"
+    "@heroicons/vue": "^2.0.18",
+    "@pinia/nuxt": "^0.4.11",
+    "daisyui": "^3.0.3",
+    "pinia": "^2.1.4"
+  },
+  "overrides": {
+    "vue": "latest"
   }
 }
