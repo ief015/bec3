@@ -2,9 +2,15 @@
 export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
+    '@pinia/nuxt',
   ],
   routeRules: {
     '/': { static: true },
+  },
+  imports: {
+    dirs: [
+      'stores',
+    ],
   },
   vite: {
     vue: {
@@ -13,5 +19,10 @@ export default defineNuxtConfig({
         propsDestructure: true,
       },
     },
+  },
+  pinia: {
+    autoImports: [
+      'defineStore',
+    ],
   },
 });
