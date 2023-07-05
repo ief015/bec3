@@ -1,15 +1,9 @@
 import GameEventHandler from "~/game/GameEventHandler";
 import GameMain from "~/game/GameMain";
 import Point from "~/game/Point";
+import Rect from "~/game/Rect";
 import LookToolController from "~/game/controllers/LookToolController";
 import Body from "~/game/simulation/Body";
-
-export interface Rect {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-}
 
 export default class SelectToolController extends GameEventHandler {
 
@@ -41,7 +35,6 @@ export default class SelectToolController extends GameEventHandler {
     ctx.beginPath();
     ctx.rect(x, y, w, h);
     ctx.stroke();
-    
   }
 
   private drawSelected(ctx: CanvasRenderingContext2D, style: string = '#555') {
@@ -57,9 +50,9 @@ export default class SelectToolController extends GameEventHandler {
     }
   }
 
-  private checkSelection() {
+  private checkSelection(rect: Rect = this.getSelectionBox()) {
     const sim = this.getSimulation();
-    const { x, y, w, h } = this.getSelectionBox();
+    const { x, y, w, h } = rect;
     const selected = sim.getBodies().filter(b => {
       const { x: bx, y: by, radius } = b;
       const left = bx - radius;
@@ -71,7 +64,7 @@ export default class SelectToolController extends GameEventHandler {
     this.selected.splice(0, this.selected.length, ...selected);
   }
 
-  public getSelected(): Readonly<Body[]> {
+  public getSelected(): Body[] {
     return this.selected;
   }
 
@@ -96,6 +89,10 @@ export default class SelectToolController extends GameEventHandler {
 
   public hasSelection(): boolean {
     return this.selected.length > 0;
+  }
+
+  public clearSelection() {
+    this.selected.splice(0, this.selected.length);
   }
 
   public deleteSelection() {
@@ -127,11 +124,11 @@ export default class SelectToolController extends GameEventHandler {
 
   public onPressDown(x: number, y: number, button: number) {
     if (button == 0) {
-      this.selecting = true;
       const cam = this.getCamera();
       const start = cam.toWorldSpace({ x, y });
       this.selectBoxOrigin = start;
       this.selectBoxEnd = start;
+      this.selecting = true;
     }
   };
 
