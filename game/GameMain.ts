@@ -10,6 +10,34 @@ export type OnFrameCallback = (game: GameMain) => void;
 
 export default class GameMain {
 
+  private static _instance?: GameMain;
+
+  public static getInstance(): GameMain {
+    if (!GameMain._instance) {
+      throw new Error('GameMain not initialized');
+    }
+    return GameMain._instance;
+  }
+
+  public static newInstance(
+    canvas: HTMLCanvasElement,
+    onFrameCb: OnFrameCallback
+  ): GameMain {
+    GameMain._instance?.destroy();
+    GameMain._instance = new GameMain(canvas);
+    GameMain._instance.start(onFrameCb);
+    return GameMain._instance;
+  }
+
+  public static destroyInstance(): void {
+    GameMain._instance?.destroy();
+    GameMain._instance = undefined;
+  }
+
+  public static isInitialized(): boolean {
+    return !!GameMain._instance;
+  }
+
   private canvas: HTMLCanvasElement;
   private sim: Simulation = new Simulation();
   private controller?: GameEventHandler;

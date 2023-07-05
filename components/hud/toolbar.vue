@@ -11,15 +11,9 @@
         <HudToolbarBtn label="Look"   name="look"   v-model:selection="selection" />
       </div>
     </div>
-    <div v-if="game">
-      <HudControlCreate
-        v-if="selection === 'create'"
-        :game="game"
-      />
-      <HudControlSelect
-        v-if="selection === 'select'"
-        :game="game"
-      />
+    <div>
+      <HudControlCreate v-if="selection === 'create'" />
+      <HudControlSelect v-if="selection === 'select'" />
     </div>
   </div>
 </template>
@@ -30,22 +24,19 @@ import CreateToolController from '~/game/controllers/CreateToolController';
 import LookToolController from '~/game/controllers/LookToolController';
 import SelectToolController from '~/game/controllers/SelectToolController';
 
-const props = defineProps<{
-  game?: GameMain;
-}>();
-
 const selection = defineModel<string>('selection', { required: true });
 
-watch([ () => props.game, selection ], () => {
-  switch (selection.value) {
+watch(selection, val => {
+  const game = GameMain.getInstance();
+  switch (val) {
     case 'select':
-      props.game?.setController(SelectToolController);
+      game.setController(SelectToolController);
       break;
     case 'create':
-      props.game?.setController(CreateToolController);
+      game.setController(CreateToolController);
       break;
     case 'look':
-      props.game?.setController(LookToolController);
+      game.setController(LookToolController);
       break;
   }
 }, { immediate: true });

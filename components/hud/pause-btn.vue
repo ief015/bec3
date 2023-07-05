@@ -11,10 +11,6 @@
 <script setup lang="ts">
 import GameMain from '~/game/GameMain';
 
-const props = defineProps<{
-  game?: GameMain;
-}>();
-
 const toggle = ref(false);
 const label = computed(() => toggle.value ? 'Resume' : 'Pause');
 
@@ -23,7 +19,7 @@ const onClick = () => {
 }
 
 watch(toggle, () => {
-  const game = props.game;
+  const game = GameMain.getInstance();
   if (game) {
     if (toggle.value) {
       game.pause();

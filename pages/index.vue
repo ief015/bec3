@@ -1,15 +1,12 @@
 <template>
   <div oncontextmenu="return false">
     <GameMain ref="game" class="fixed w-screen h-screen z-0" />
-    <div v-if="game" class="absolute inset-0 z-10 cursor-default pointer-events-none">
+    <div v-if="game?.game" class="absolute inset-0 z-10 cursor-default pointer-events-none">
       <div class="absolute top-2 left-2">
         <LinkGithub href="https://github.com/ief015/bec3" />
       </div>
       <div class="relative top-2 flex justify-center">
-        <HudToolbar
-          v-model:selection="tool"
-          :game="game.game"
-        />
+        <HudToolbar v-model:selection="tool" />
       </div>
       <HudStats
         class="absolute bottom-2 left-2 select-none"
@@ -17,17 +14,11 @@
       />
       <HudCounter
         class="absolute bottom-2 left-2 right-2 select-none"
-        :count="game.bodyCount"
         label="bodies"
+        :count="game.bodyCount"
       />
-      <HudClearBtn
-        class="absolute bottom-2 right-2 pointer-events-auto"
-        :game="game.game"
-      />
-      <HudPauseBtn
-        class="absolute top-2 right-2 pointer-events-auto"
-        :game="game.game"
-      />
+      <HudClearBtn class="absolute bottom-2 right-2 pointer-events-auto" />
+      <HudPauseBtn class="absolute top-2 right-2 pointer-events-auto" />
     </div>
   </div>
 </template>

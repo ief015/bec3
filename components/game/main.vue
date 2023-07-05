@@ -40,46 +40,35 @@ const onFrame = (game: GameMain) => {
 }
 
 const onMouseDown = (e: MouseEvent) => {
-  if (game.value) {
-    game.value.handleMouseDown(e);
-  }
+  game.value?.handleMouseDown(e);
 }
 
 const onMouseUp = (e: MouseEvent) => {
-  if (game.value) {
-    game.value.handleMouseUp(e);
-  }
+  game.value?.handleMouseUp(e);
 }
 
 const onTouchDown = (e: TouchEvent) => {
-  if (game.value) {
-    game.value.handleTouchDown(e);
-  }
+  game.value?.handleTouchDown(e);
 }
 
 const onTouchUp = (e: TouchEvent) => {
-  if (game.value) {
-    game.value.handleTouchUp(e);
-  }
+  game.value?.handleTouchUp(e);
 }
 
 const onWheel = (e: WheelEvent) => {
-  if (game.value) {
-    game.value.handleWheel(e);
-  }
+  game.value?.handleWheel(e);
 }
 
-watch(canvas, () => {
-  if (canvas.value) {
-    game.value?.destroy();
-    game.value = new GameMain(canvas.value);
-    game.value.start(onFrame);
+watch(canvas, canvas => {
+  if (canvas) {
+    game.value = GameMain.newInstance(canvas, onFrame);
     onStart(game.value);
   }
 }, { immediate: true });
 
 onUnmounted(() => {
-  game.value?.destroy();
+  game.value = undefined;
+  GameMain.destroyInstance();
 });
 
 defineExpose({

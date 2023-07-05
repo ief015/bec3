@@ -82,15 +82,12 @@ import GameMain from '~/game/GameMain';
 import SelectToolController from '~/game/controllers/SelectToolController';
 import Body from '~/game/simulation/Body';
 
-const props = defineProps<{
-  game: GameMain;
-}>();
-
-const showInfoDialog = ref<boolean>(false);
-const controller = ref<SelectToolController>();
+const game = GameMain.getInstance();
+const controller = ref(game.getController<SelectToolController>()!);
 const hasSelection = computed<boolean>(() => controller.value?.hasSelection() ?? false);
 const selectedCount = computed<number>(() => controller.value?.getSelected()?.length ?? 0);
 const selected = computed<Body[]>(() => controller.value?.getSelected() ?? []);
+const showInfoDialog = ref<boolean>(false);
 
 const getMode = () => {
   return 'select';
@@ -103,9 +100,5 @@ const onClickDelete = () => {
 const onClickShowInfo = () => {
   showInfoDialog.value = true;
 }
-
-watch(() => props.game, () => {
-  controller.value = props.game.getController<SelectToolController>();
-}, { immediate: true });
 
 </script>
