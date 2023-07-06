@@ -21,7 +21,10 @@ const randomNameMashed = (numSlices: number = 2): string => {
   for (let i = 0; i < slices.length; i++) {
     name += slices[i];
     if (i < slices.length - 1) {
-      name += Math.random() < 0.01 ? '-' : '';
+      name +=
+        Math.random() < 0.01 ? '-' :
+        Math.random() < 0.01 ? '\'' :
+         '';
     }
   }
   return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
