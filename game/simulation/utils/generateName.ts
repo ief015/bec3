@@ -5,13 +5,26 @@ const greekAlphabet = "ΑαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξ�
 const randomNameM = (): string => nameM[Math.floor(Math.random() * nameM.length)];
 const randomNameF = (): string => nameF[Math.floor(Math.random() * nameF.length)];
 const randomGreekLetter = (): string => greekAlphabet[Math.floor(Math.random() * greekAlphabet.length)];
-const randomNameMashed = (): string => {
-  const left = Math.random() < 0.5 ? randomNameF() : randomNameM();
-  const right = Math.random() < 0.5 ? randomNameF() : randomNameM();
-  const mash =
-    left.slice(0, Math.ceil(Math.random() * left.length)) +
-    right.slice(Math.floor(Math.random() * right.length));
-  return mash.charAt(0).toUpperCase() + mash.slice(1).toLowerCase();
+const randomSliceFromName = (name: string): string => {
+  const sliceLen = Math.ceil(name.length * Math.random());
+  const start = Math.floor((name.length - sliceLen) * Math.random());
+  const slice = name.slice(start, start + sliceLen);
+  return slice.charAt(0).toUpperCase() + slice.slice(1).toLowerCase();
+}
+const randomNameMashed = (numSlices: number = 2): string => {
+  const slices: string[] = [];
+  for (let i = 0; i < numSlices; i++) {
+    const name = Math.random() < 0.5 ? randomNameF() : randomNameM();
+    slices.push(randomSliceFromName(name));
+  }
+  let name = '';
+  for (let i = 0; i < slices.length; i++) {
+    name += slices[i];
+    if (i < slices.length - 1) {
+      name += Math.random() < 0.01 ? '-' : '';
+    }
+  }
+  return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
 };
 
 export default function generateName(): string {
@@ -23,6 +36,10 @@ export default function generateName(): string {
       parts.push(randomNameF());
     else if (r < 0.02)
       parts.push(randomNameM());
+    else if (r < 0.03)
+      parts.push(randomSliceFromName(randomNameF()));
+    else if (r < 0.04)
+      parts.push(randomSliceFromName(randomNameM()));
     else
       parts.push(randomNameMashed());
   }
@@ -32,3 +49,9 @@ export default function generateName(): string {
   }
   return parts.join(" ");
 }
+
+let a = ''
+for (let i = 0; i < 100; i++) {
+  a += generateName() + '\n'
+}
+console.log(a);
