@@ -74,12 +74,12 @@ const sortedBodies = computed(() => {
   });
 });
 
-const onClickGoto = (body: Body) => {
+const onClickGoto = (body: Body, autoZoom: boolean = false) => {
   const cam = game.getCamera();
   const { innerWidth, innerHeight } = window;
+  autoZoom && cam.setZoom(1 / body.radius * Math.min(innerWidth, innerHeight) / 100);
   cam.setPosition(-body.x, -body.y);
   cam.move(innerWidth / 2, innerHeight / 2);
-  cam.setZoom(1 / body.radius * Math.min(innerWidth, innerHeight) / 100);
 }
 
 </script>
