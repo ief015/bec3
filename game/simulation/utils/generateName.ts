@@ -49,9 +49,3 @@ export default function generateName(): string {
   }
   return parts.join(" ");
 }
-
-let a = ''
-for (let i = 0; i < 100; i++) {
-  a += generateName() + '\n'
-}
-console.log(a);
