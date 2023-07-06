@@ -5,11 +5,12 @@
       <ViewBodyListItem
         :body="body"
         :fields="bodyFields"
-        num-cols="3"
       >
         <template #after-title>
           <div class="flex-grow"></div>
-          <button type="button" class="btn btn-circle btn-ghost btn-sm">
+          <button type="button" class="btn btn-circle btn-ghost btn-sm"
+            @click="onClickGoto(body)"
+          >
             <EyeIcon class="h-4" />
           </button>
         </template>
@@ -19,29 +20,14 @@
 </template>
 
 <script setup lang="ts">
-import { FieldDefinition } from '~/components/view/BodyListItem.vue';
+import GameMain from '~/game/GameMain';
 import Body from '~/game/simulation/Body';
+import { FieldDefinition } from '~/components/view/BodyListItem.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps<{
   bodies?: Body[];
 }>();
-
-const title = computed(() => {
-  if (!props.bodies)
-    return '';
-  if (props.bodies.length === 1)
-    return props.bodies[0].name;
-  return `${props.bodies.length} bodies`;
-});
-
-const sortedBodies = computed(() => {
-  if (!props.bodies)
-    return [];
-  return [...props.bodies].sort((a, b) => {
-    return a.name.localeCompare(b.name);
-  });
-});
 
 const bodyFields: FieldDefinition[] = [
   {
@@ -69,5 +55,31 @@ const bodyFields: FieldDefinition[] = [
     format: b => b.getDirectionDegrees().toFixed(2),
   },
 ];
+
+const game = GameMain.getInstance()
+
+const title = computed(() => {
+  if (!props.bodies)
+    return '';
+  if (props.bodies.length === 1)
+    return props.bodies[0].name;
+  return `${props.bodies.length} bodies`;
+});
+
+const sortedBodies = computed(() => {
+  if (!props.bodies)
+    return [];
+  return [...props.bodies].sort((a, b) => {
+    return a.name.localeCompare(b.name);
+  });
+});
+
+const onClickGoto = (body: Body) => {
+  const cam = game.getCamera();
+  const { innerWidth, innerHeight } = window;
+  cam.setPosition(-body.x, -body.y);
+  cam.move(innerWidth / 2, innerHeight / 2);
+  cam.setZoom(1 / body.radius * Math.min(innerWidth, innerHeight) / 100);
+}
 
 </script>

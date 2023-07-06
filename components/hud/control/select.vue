@@ -83,9 +83,9 @@ import SelectToolController from '~/game/controllers/SelectToolController';
 import Body from '~/game/simulation/Body';
 
 const game = GameMain.getInstance();
-const controller = ref(game.getController<SelectToolController>()!);
+const controller = computed(() => game.getController<SelectToolController>());
 const hasSelection = computed<boolean>(() => controller.value?.hasSelection() ?? false);
-const selectedCount = computed<number>(() => controller.value?.getSelected()?.length ?? 0);
+const selectedCount = computed<number>(() => controller.value?.getSelected().length ?? 0);
 const selected = computed<Body[]>(() => controller.value?.getSelected() ?? []);
 const showInfoDialog = ref<boolean>(false);
 
