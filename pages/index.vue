@@ -1,5 +1,5 @@
 <template>
-  <div oncontextmenu="return false">
+  <div oncontextmenu="return false" class="custom-scroll">
     <GameMain ref="game" class="fixed w-screen h-screen z-0" />
     <div v-if="game?.game" class="absolute inset-0 z-10 cursor-default pointer-events-none">
       <div class="absolute top-2 left-2">
@@ -30,3 +30,32 @@ const game = ref<InstanceType<typeof GameMain>>();
 const tool = ref<string>('create');
 
 </script>
+
+<style>
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(0 0 0 / 20%);
+  border-radius: 1em;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 1em;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #333;
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #444 rgba(0, 0, 0, 0.2);
+}
+
+html {
+  scrollbar-track-color: rgba(0, 0, 0, 0.2);
+}
+</style>

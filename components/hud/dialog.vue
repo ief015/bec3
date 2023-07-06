@@ -1,7 +1,7 @@
 <template>
   <dialog ref="dialog" class="modal" @click="!persistent && hide()">
     <form v-if="opened" method="dialog" class="modal-box opacity-90 flex flex-col" @click.stop>
-      <div class="">
+      <div>
         <button
           v-if="!hideClose" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
           @click="hide"
