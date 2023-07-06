@@ -31,7 +31,7 @@ const randomNameMashed = (numSlices: number = 2): string => {
 };
 
 export default function generateName(): string {
-  const nparts = Math.floor(Math.random() * 2) + 1;
+  const nparts = Math.floor(Math.random() * 2.01) + 1;
   const parts = [];
   for (let i = 0; i < nparts; i++) {
     const r = Math.random();
@@ -44,7 +44,7 @@ export default function generateName(): string {
     else if (r < 0.04)
       parts.push(randomSliceFromName(randomNameM()));
     else
-      parts.push(randomNameMashed());
+      parts.push(randomNameMashed(Math.ceil(1 + Math.random() * 1.01)));
   }
   if (Math.random() < 0.1) {
     const l = randomGreekLetter();
@@ -52,3 +52,9 @@ export default function generateName(): string {
   }
   return parts.join(" ");
 }
+
+let a = ''
+for (let i = 0; i < 100; i++) {
+  a += generateName() + '\n'
+}
+console.log(a);
