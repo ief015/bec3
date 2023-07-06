@@ -11,7 +11,7 @@
       </slot>
       <slot name="after-title"></slot>
     </div>
-    <div :class="`grid ${gridColsClass} gap-2`">
+    <div class="grid grid-cols-3 gap-2">
       <div v-for="{ label, field, format } in fields" class="text-left">
         <div v-if="label" class="label-text">{{ label }}</div>
         <div class="overflow-hidden text-xs">{{ format ? format(body) : field ? body[field] : '' }}</div>
@@ -32,12 +32,7 @@ export type FieldDefinition = {
 const props = defineProps<{
   body?: Body;
   fields?: FieldDefinition[];
-  numCols?: string|number;
 }>();
-
-const gridColsClass = computed(() => {
-  return `grid-cols-${props.numCols ?? 4}`;
-});
 
 const colorClass = computed(() => {
   return props.body?.strokeColor;
