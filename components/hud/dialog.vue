@@ -1,6 +1,6 @@
 <template>
   <dialog ref="dialog" class="modal" @click="!persistent && hide()">
-    <form method="dialog" class="modal-box opacity-90" @click.stop>
+    <form v-if="opened" method="dialog" class="modal-box opacity-90" @click.stop>
       <button
         v-if="!hideClose" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
         @click="hide"
