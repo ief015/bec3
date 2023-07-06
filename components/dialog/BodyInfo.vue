@@ -9,7 +9,7 @@
         <template #after-title>
           <div class="flex-grow"></div>
           <button type="button" class="btn btn-circle btn-ghost btn-sm"
-            @click="onClickGoto(body)"
+            @click="onClickGoto(body, 'out-only')"
           >
             <EyeIcon class="h-4" />
           </button>
@@ -24,6 +24,8 @@ import GameMain from '~/game/GameMain';
 import Body from '~/game/simulation/Body';
 import { FieldDefinition } from '~/components/view/BodyListItem.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline'
+
+type AutoZoomOptions = 'none' | 'out-only' | 'auto';
 
 const props = defineProps<{
   bodies?: Body[];
@@ -74,10 +76,14 @@ const sortedBodies = computed(() => {
   });
 });
 
-const onClickGoto = (body: Body, autoZoom: boolean = false) => {
+const onClickGoto = (body: Body, autoZoom: AutoZoomOptions = 'none') => {
   const cam = game.getCamera();
   const { innerWidth, innerHeight } = window;
-  autoZoom && cam.setZoom(1 / body.radius * Math.min(innerWidth, innerHeight) / 100);
+  if (autoZoom != 'none') {
+    const zoom = 1 / body.radius * Math.min(innerWidth, innerHeight) / 100;
+    autoZoom == 'out-only' && zoom < cam.getZoom() && cam.setZoom(zoom);
+    autoZoom == 'auto' && cam.setZoom(zoom);
+  }
   cam.setPosition(-body.x, -body.y);
   cam.move(innerWidth / 2, innerHeight / 2);
 }
