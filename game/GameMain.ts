@@ -24,7 +24,7 @@ export default class GameMain {
     onFrameCb: OnFrameCallback
   ): GameMain {
     GameMain._instance?.destroy();
-    GameMain._instance = new GameMain(canvas);
+    GameMain._instance = <GameMain>reactive(new GameMain(canvas));
     GameMain._instance.start(onFrameCb);
     return GameMain._instance;
   }
