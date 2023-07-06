@@ -13,6 +13,9 @@ export default class SelectToolController extends GameEventHandler {
   private selectBoxOrigin: Point = { x: 0, y: 0 };
   private selectBoxEnd: Point = { x: 0, y: 0 };
 
+  // Used to determine if the selection has changed.
+  private lastCheckBodiesLength: number = 0;
+
   constructor(game: GameMain) {
     super(game);
     this.look = new LookToolController(game);
@@ -50,10 +53,10 @@ export default class SelectToolController extends GameEventHandler {
     }
   }
 
-  private checkSelection(rect: Rect = this.getSelectionBox()) {
-    const sim = this.getSimulation();
+  private makeSelection(rect: Rect = this.getSelectionBox()) {
+    const bodies = this.getSimulation().getBodies();
     const { x, y, w, h } = rect;
-    const selected = sim.getBodies().filter(b => {
+    const selected = bodies.filter(b => {
       const { x: bx, y: by, radius } = b;
       const left = bx - radius;
       const right = bx + radius;
@@ -62,10 +65,27 @@ export default class SelectToolController extends GameEventHandler {
       return !(left > x + w || right < x || top > y + h || bottom < y);
     });
     this.selected.splice(0, this.selected.length, ...selected);
+    this.lastCheckBodiesLength = bodies.length;
+  }
+
+  private validateSelection() {
+    const bodies = this.getSimulation().getBodies();
+    const selected = this.selected.filter(b => bodies.indexOf(b) != -1);
+    this.selected.splice(0, this.selected.length, ...selected);
   }
 
   public getSelected(): Body[] {
     return this.selected;
+  }
+
+  public deleteSelection() {
+    const sim = this.getSimulation();
+    sim.removeBodies(...this.selected);
+    this.selected.splice(0, this.selected.length);
+  }
+
+  public clearSelection() {
+    this.selected.splice(0, this.selected.length);
   }
 
   public getSelectionBox(): Rect {
@@ -91,18 +111,12 @@ export default class SelectToolController extends GameEventHandler {
     return this.selected.length > 0;
   }
 
-  public clearSelection() {
-    this.selected.splice(0, this.selected.length);
-  }
-
-  public deleteSelection() {
-    const sim = this.getSimulation();
-    sim.removeBodies(...this.selected);
-    this.selected.splice(0, this.selected.length);
-  }
-
   public onPreUpdate(dt: number) {
-
+    const len = this.getSimulation().getBodies().length;
+    if (len != this.lastCheckBodiesLength) {
+      this.validateSelection();
+      this.lastCheckBodiesLength = len;
+    }
   }
 
   public onPostUpdate(dt: number) {
@@ -138,7 +152,7 @@ export default class SelectToolController extends GameEventHandler {
         const cam = this.getCamera();
         this.selectBoxEnd = cam.toWorldSpace({ x, y });
         this.selecting = false;
-        this.checkSelection();
+        this.makeSelection();
       }
     }
   };
