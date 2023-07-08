@@ -15,7 +15,7 @@ export interface ConvertOptions {
   from?: Unit;
 }
 
-const units: UnitDefinition[] = [
+const definitions: UnitDefinition[] = [
   { unit: 'nm', factor: 1e-9 },
   { unit: 'μm', factor: 1e-6 },
   { unit: 'mm', factor: 1e-3 },
@@ -29,8 +29,8 @@ const units: UnitDefinition[] = [
 ];
 
 export function determineBestMeasurement(distanceInMeters: number): UnitDefinition {
-  let best: UnitDefinition = units[0];
-  for (const unit of units) {
+  let best: UnitDefinition = definitions[0];
+  for (const unit of definitions) {
     const { factor } = unit;
     if (distanceInMeters < factor)
       break;
@@ -44,13 +44,13 @@ export function convertDistance(
   options?: ConvertOptions,
 ): ConvertedDistance {
   const { from, to } = Object.assign({ to: 'auto', from: 'm' }, options ?? {});
-  const fromUnitDef = units.find(u => u.unit === from);
+  const fromUnitDef = definitions.find(def => def.unit === from);
   if (!fromUnitDef)
     throw new Error(`Unknown unit: ${from}`);
   const distanceInMeters = distance * fromUnitDef.factor;
   const toUnitDef = to === 'auto'
     ? determineBestMeasurement(distanceInMeters)
-    : units.find(u => u.unit === to);
+    : definitions.find(def => def.unit === to);
   if (!toUnitDef)
     throw new Error(`Unknown unit: ${to}`);
   const convertedDistance = distanceInMeters / toUnitDef.factor;
