@@ -1,22 +1,27 @@
 <template>
-  <dialog ref="dialog" class="modal" @click="!persistent && hide()">
-    <form v-if="opened" method="dialog" class="modal-box opacity-90 flex flex-col" @click.stop>
-      <div>
-        <button
-          v-if="!hideClose" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-          @click="hide"
-        >
-          ✕
-        </button>
-        <h3 v-if="title != null" class="font-bold text-lg mb-6">{{ title }}</h3>
-      </div>
-      <div class="overflow-auto">
-        <slot></slot>
-      </div>
-      <div v-if="$slots['actions']" class="modal-action">
-        <slot name="actions"></slot>
-      </div>
-    </form>
+  <dialog ref="dialog" class="modal" @click="!persistent && hide()" @keydown="onKeyDown">
+    <Transition
+      appear
+      appear-active-class="duration-1000"
+    >
+      <form v-if="opened" method="dialog" class="modal-box opacity-90 flex flex-col" @click.stop>
+        <div>
+          <button
+            v-if="!hideClose" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            @click="hide"
+          >
+            ✕
+          </button>
+          <h3 v-if="title != null" class="font-bold text-lg mb-6">{{ title }}</h3>
+        </div>
+        <div class="overflow-auto">
+          <slot></slot>
+        </div>
+        <div v-if="$slots['actions']" class="modal-action">
+          <slot name="actions"></slot>
+        </div>
+      </form>
+    </Transition>
   </dialog>
 </template>
 
@@ -49,6 +54,15 @@ const toggle = () => {
     show();
   }
 };
+
+const onKeyDown: HTMLDialogElement['onkeydown'] = (key) => {
+  if (!props.persistent) {
+    if (key.code === 'Escape') {
+      key.preventDefault();
+      hide();
+    }
+  }
+}
 
 if (props.autoOpen) {
   show();
