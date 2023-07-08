@@ -5,6 +5,8 @@ import Rect from "~/game/Rect";
 import LookToolController from "~/game/controllers/LookToolController";
 import Body from "~/game/simulation/Body";
 
+type SelectMode = 'replace' | 'append';
+
 export default class SelectToolController extends GameEventHandler {
 
   private look: LookToolController;
@@ -12,6 +14,7 @@ export default class SelectToolController extends GameEventHandler {
   private selecting: boolean = false;
   private selectBoxOrigin: Point = { x: 0, y: 0 };
   private selectBoxEnd: Point = { x: 0, y: 0 };
+  private mode: SelectMode = 'replace';
 
   // Used to determine if the selection has changed.
   private lastCheckBodiesLength: number = 0;
@@ -64,7 +67,12 @@ export default class SelectToolController extends GameEventHandler {
       const bottom = by + radius;
       return !(left > x + w || right < x || top > y + h || bottom < y);
     });
-    this.selected.splice(0, this.selected.length, ...selected);
+    if (this.mode == 'append') {
+      const newSelections = selected.filter(b => this.selected.indexOf(b) == -1);
+      this.selected.push(...newSelections);
+    } else {
+      this.selected.splice(0, this.selected.length, ...selected);
+    }
     this.lastCheckBodiesLength = bodies.length;
   }
 
@@ -119,14 +127,6 @@ export default class SelectToolController extends GameEventHandler {
     }
   }
 
-  public onPostUpdate(dt: number) {
-
-  }
-
-  public onPreDraw(ctx: CanvasRenderingContext2D, dt: number) {
-
-  }
-
   public onPostDraw(ctx: CanvasRenderingContext2D, dt: number) {
     ctx.save();
     if (this.selecting) {
@@ -163,9 +163,17 @@ export default class SelectToolController extends GameEventHandler {
       this.selectBoxEnd = cam.toWorldSpace({ x, y });
     }
   }
+  
+  public onKeyDown(key: string): void {
+    if (key == 'Shift') {
+      this.mode = 'append';
+    }
+  }
 
-  public onWheel(dx: number, dy: number, dz: number) {
-
+  public onKeyUp(key: string): void {
+    if (key == 'Shift') {
+      this.mode = 'replace';
+    }
   }
 
 }
