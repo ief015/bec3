@@ -20,7 +20,7 @@ export default class Camera {
   }
 
   public getPosition(): Point {
-    const pos = this.transform.transformPoint({ x: 0, y: 0 });
+    const pos = this.transform.inverse().transformPoint({ x: 0, y: 0 });
     return { x: pos.x, y: pos.y };
   }
 
