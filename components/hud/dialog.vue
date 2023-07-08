@@ -7,12 +7,15 @@
       <form v-if="opened" method="dialog" class="modal-box opacity-90 flex flex-col" @click.stop>
         <div>
           <button
-            v-if="!hideClose" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            v-if="!hideClose"
+            class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
             @click="hide"
           >
             ✕
           </button>
-          <h3 v-if="title != null" class="font-bold text-lg mb-6">{{ title }}</h3>
+          <h3 v-if="title != null" class="font-bold text-lg mb-6">
+            {{ title }}
+          </h3>
         </div>
         <div class="overflow-auto">
           <slot></slot>
