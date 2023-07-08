@@ -1,5 +1,3 @@
-import generateName from "~/game/simulation/utils/generateName";
-
 export default class Body {
 
   public name: string = generateName();
