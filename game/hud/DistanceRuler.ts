@@ -1,5 +1,4 @@
 import GameEventHandler from "~/game/GameEventHandler";
-import { calcFriendlyDistance } from "~/game/simulation/utils/calcFriendlyDistance";
 
 export default class DistanceRuler extends GameEventHandler {
 
@@ -26,7 +25,7 @@ export default class DistanceRuler extends GameEventHandler {
     const dy = endY - startY;
 
     const distanceMeters = Math.sqrt(dx * dx + dy * dy);
-    const { distance, unit } = calcFriendlyDistance(distanceMeters);
+    const { distance, unit } = convertDistance(distanceMeters);
 
     ctx.save();
     ctx.resetTransform();
