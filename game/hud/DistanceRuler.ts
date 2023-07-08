@@ -13,7 +13,7 @@ export default class DistanceRuler extends GameEventHandler {
     const screenWidth = ctx.canvas.width;
     const screenHeight = ctx.canvas.height;
 
-    const baseRulerLength = 200;
+    const baseRulerLength = Math.min(300, screenWidth / 5);
 
     const rulerStart = { x: screenWidth - baseRulerLength - 100, y: screenHeight - 20 };
     const rulerEnd = { x: rulerStart.x + baseRulerLength, y: rulerStart.y };
