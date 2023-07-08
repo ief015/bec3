@@ -5,6 +5,7 @@ import Point from "~/game/Point";
 import Camera from "~/game/Camera";
 import GameEventManager from "~/game/GameEventManager";
 import ShowBodyDetails from "~/game/hud/ShowBodyDetails";
+import DistanceRuler from "~/game/hud/DistanceRuler";
 
 export type OnFrameCallback = (game: GameMain) => void;
 
@@ -42,6 +43,7 @@ export default class GameMain {
   private sim: Simulation = new Simulation();
   private controller?: GameEventHandler;
   private bodyDetailer: ShowBodyDetails = new ShowBodyDetails(this);
+  private distanceRuler: DistanceRuler = new DistanceRuler(this);
   private events: GameEventManager = new GameEventManager(this);
   private camera: Camera = new Camera();
   private lastFrameTimestamp: number = performance.now();
@@ -68,6 +70,7 @@ export default class GameMain {
     this.canvas = canvas;
     this.setCanvas(canvas);
     this.events.addHandler(this.bodyDetailer);
+    this.events.addHandler(this.distanceRuler);
   }
 
   public getCursor(): Readonly<Point> {
