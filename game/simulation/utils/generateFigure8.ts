@@ -1,5 +1,4 @@
 import Body from "~/game/simulation/Body";
-import randomBodyColor from "~/game/simulation/utils/randomColor";
 
 /**
  * Generate a three-body solution of a figure-8.
@@ -18,7 +17,7 @@ export default function generateFigure8(x: number = 0, y: number = x, scale: num
     body1.vy = 0.4323657300 * scale;
     body1.radius = 0.1 * scale;
     body1.mass = scale ** 3;
-    body1.strokeColor = randomBodyColor();
+    body1.strokeColor = randomColorStyle();
 
     body2.x = x;
     body2.y = y;
@@ -26,7 +25,7 @@ export default function generateFigure8(x: number = 0, y: number = x, scale: num
     body2.vy = -0.86473146 * scale;
     body2.radius = 0.1 * scale;
     body2.mass = scale ** 3;
-    body2.strokeColor = randomBodyColor();
+    body2.strokeColor = randomColorStyle();
 
     body3.x = -0.97000436 * scale + x;
     body3.y = 0.24308753 * scale + y;
@@ -34,7 +33,7 @@ export default function generateFigure8(x: number = 0, y: number = x, scale: num
     body3.vy = 0.4323657300 * scale;
     body3.radius = 0.1 * scale;
     body3.mass = scale ** 3;
-    body3.strokeColor = randomBodyColor();
+    body3.strokeColor = randomColorStyle();
 
     return [ body1, body2, body3 ];
   }

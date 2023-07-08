@@ -3,7 +3,6 @@ import GameMain from "~/game/GameMain";
 import Point from "~/game/Point";
 import LookToolController from "~/game/controllers/LookToolController";
 import Body from "~/game/simulation/Body";
-import randomBodyColor from "~/game/simulation/utils/randomColor";
 
 export default class CreateToolController extends GameEventHandler {
 
@@ -76,7 +75,7 @@ export default class CreateToolController extends GameEventHandler {
     body.mass = this.mass;
     body.vx = (originX - tx) * this.force;
     body.vy = (originY - ty) * this.force;
-    body.strokeColor = randomBodyColor();
+    body.strokeColor = randomColorStyle();
     sim.pushBodies(body);
   }
 
