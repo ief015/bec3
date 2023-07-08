@@ -13,7 +13,6 @@
 <script setup lang="ts">
 import GameMain from '~/game/GameMain';
 import GameStats from '~/game/GameStats';
-import generateFigure8 from '~/game/simulation/utils/generateFigure8';
 
 const canvas = ref<HTMLCanvasElement>();
 const game = ref<GameMain>();
