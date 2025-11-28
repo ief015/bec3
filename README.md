@@ -1,6 +1,6 @@
 # Bec 3
 
-https://bec3-390100.uc.r.appspot.com/
+[https://bec.natecousins.com/](https://bec.natecousins.com/)
 
 ![Preview](preview.png)
 
